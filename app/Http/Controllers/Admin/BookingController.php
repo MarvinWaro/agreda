@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
+use App\Jobs\NotifyGuestOfDecision;
 use App\Models\Booking;
 use App\Models\Sport;
 use App\Support\BookingSummary;
@@ -66,6 +67,9 @@ class BookingController extends Controller
         }
 
         $booking->update(['status' => $to]);
+
+        // Notify the requester back (queued; stubbed Facebook delivery).
+        NotifyGuestOfDecision::dispatch($booking);
 
         return back()->with('toast', [
             'type' => 'success',

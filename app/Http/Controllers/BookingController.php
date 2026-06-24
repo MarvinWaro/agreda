@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AvailabilityRequest;
 use App\Http\Requests\StoreBookingRequest;
+use App\Jobs\NotifyOwnerOfBooking;
 use App\Models\Booking;
 use App\Models\Court;
 use App\Models\Sport;
@@ -81,6 +82,9 @@ class BookingController extends Controller
                 'notes' => $data['notes'] ?? null,
             ],
         );
+
+        // Queued so the visitor's submit isn't blocked on Facebook delivery.
+        NotifyOwnerOfBooking::dispatch($booking);
 
         return redirect()->route('booking.done', $booking);
     }
