@@ -1,0 +1,511 @@
+import { Head, useForm } from '@inertiajs/react';
+import { CalendarDays, Check } from 'lucide-react';
+import { useRef, useState } from 'react';
+import type { FormEvent } from 'react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import PublicLayout from '@/layouts/public-layout';
+import { cn } from '@/lib/utils';
+
+type SportOption = {
+    id: number;
+    name: string;
+    slug: string;
+    icon: string | null;
+    rate_offpeak: string;
+    rate_peak: string;
+};
+
+type Slot = {
+    start: string;
+    end: string;
+    label: string;
+    status: 'free' | 'pending' | 'booked' | 'past' | 'closed';
+    selectable: boolean;
+};
+
+type Availability = {
+    date: string;
+    closed: boolean;
+    closed_reason: string | null;
+    slots: Slot[];
+};
+
+type BookForm = {
+    sport_id: number | null;
+    date: string;
+    start_time: string;
+    guest_name: string;
+    guest_phone: string;
+    notes: string;
+};
+
+type Props = {
+    sports: SportOption[];
+    court: { id: number; name: string; location: string | null } | null;
+};
+
+const stepLabels = ['Sport', 'Date', 'Time', 'Details'];
+
+function toYmd(date: Date): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+const slotMeta: Record<Slot['status'], { label: string; className: string }> = {
+    free: { label: 'Free', className: 'text-emerald-600' },
+    pending: { label: 'Pending', className: 'text-amber-600' },
+    booked: { label: 'Booked', className: 'text-muted-foreground' },
+    past: { label: 'Past', className: 'text-muted-foreground' },
+    closed: { label: 'Closed', className: 'text-muted-foreground' },
+};
+
+function Stepper({ current }: { current: number }) {
+    return (
+        <ol className="flex flex-wrap items-center gap-2 text-xs">
+            {stepLabels.map((label, index) => {
+                const done = index < current;
+                const active = index === current;
+
+                return (
+                    <li key={label} className="flex items-center gap-2">
+                        <span
+                            className={cn(
+                                'flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium',
+                                active && 'bg-primary text-primary-foreground',
+                                done && 'bg-primary/10 text-primary',
+                                !active &&
+                                    !done &&
+                                    'bg-muted text-muted-foreground',
+                            )}
+                        >
+                            <span>{index + 1}</span>
+                            {label}
+                        </span>
+                        {index < stepLabels.length - 1 && (
+                            <span className="text-muted-foreground">›</span>
+                        )}
+                    </li>
+                );
+            })}
+        </ol>
+    );
+}
+
+export default function Book({ sports }: Props) {
+    const [sportId, setSportId] = useState<number | null>(null);
+    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [slot, setSlot] = useState<string | null>(null);
+    const [availability, setAvailability] = useState<Availability | null>(null);
+    const [loadingSlots, setLoadingSlots] = useState(false);
+    const [slotsError, setSlotsError] = useState<string | null>(null);
+
+    const form = useForm<BookForm>({
+        sport_id: null,
+        date: '',
+        start_time: '',
+        guest_name: '',
+        guest_phone: '',
+        notes: '',
+    });
+
+    const dateStr = date ? toYmd(date) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const requestRef = useRef(0);
+
+    const loadSlots = (
+        nextSportId: number | null,
+        nextDate: Date | undefined,
+    ) => {
+        setSlot(null);
+        setAvailability(null);
+        setSlotsError(null);
+
+        if (!nextSportId || !nextDate) {
+            return;
+        }
+
+        const requestId = ++requestRef.current;
+        setLoadingSlots(true);
+
+        fetch(
+            `/api/availability?sport_id=${nextSportId}&date=${toYmd(nextDate)}`,
+            { headers: { Accept: 'application/json' } },
+        )
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Request failed');
+                }
+
+                return response.json();
+            })
+            .then((data: Availability) => {
+                if (requestRef.current === requestId) {
+                    setAvailability(data);
+                }
+            })
+            .catch(() => {
+                if (requestRef.current === requestId) {
+                    setSlotsError(
+                        'Could not load availability. Please try again.',
+                    );
+                }
+            })
+            .finally(() => {
+                if (requestRef.current === requestId) {
+                    setLoadingSlots(false);
+                }
+            });
+    };
+
+    const handleSportChange = (value: string) => {
+        const nextSportId = value ? Number(value) : null;
+        setSportId(nextSportId);
+        loadSlots(nextSportId, date);
+    };
+
+    const handleDateChange = (nextDate: Date | undefined) => {
+        setDate(nextDate);
+        loadSlots(sportId, nextDate);
+    };
+
+    const currentStep = !sportId ? 0 : !date ? 1 : !slot ? 2 : 3;
+    const selectedSport = sports.find((sport) => sport.id === sportId) ?? null;
+
+    const submit = (event: FormEvent) => {
+        event.preventDefault();
+
+        if (!sportId || !dateStr || !slot) {
+            return;
+        }
+
+        form.transform((data) => ({
+            ...data,
+            sport_id: sportId,
+            date: dateStr,
+            start_time: slot,
+        }));
+
+        form.post('/book', { preserveScroll: true });
+    };
+
+    return (
+        <PublicLayout>
+            <Head title="Book the court" />
+
+            <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        Book the court
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Pick a sport, date and time slot, then send your
+                        request. The owner confirms availability before
+                        it&apos;s final.
+                    </p>
+                </div>
+
+                <div className="mb-8">
+                    <Stepper current={currentStep} />
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+                    <div className="space-y-6">
+                        {/* Step 1 — sport */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">
+                                    1 · Choose a sport
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ToggleGroup
+                                    type="single"
+                                    value={sportId ? String(sportId) : ''}
+                                    onValueChange={handleSportChange}
+                                    className="flex flex-wrap justify-start gap-2"
+                                >
+                                    {sports.map((sport) => (
+                                        <ToggleGroupItem
+                                            key={sport.id}
+                                            value={String(sport.id)}
+                                            variant="outline"
+                                            className="h-10 rounded-full px-4 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                                        >
+                                            {sport.name}
+                                        </ToggleGroupItem>
+                                    ))}
+                                </ToggleGroup>
+                                {selectedSport && (
+                                    <p className="mt-3 text-xs text-muted-foreground">
+                                        Rates: ₱{selectedSport.rate_offpeak}{' '}
+                                        off-peak · ₱{selectedSport.rate_peak}{' '}
+                                        peak (evenings &amp; weekends). Final
+                                        total is shown after you submit.
+                                    </p>
+                                )}
+                                {form.errors.sport_id && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {form.errors.sport_id}
+                                    </p>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Step 2 + 3 — date & slots */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">
+                                    2 · Pick a date &amp; time
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="grid gap-6 sm:grid-cols-[auto_1fr]">
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={handleDateChange}
+                                    disabled={{ before: today }}
+                                    className="rounded-md border"
+                                />
+
+                                <div className="min-w-0">
+                                    <div className="mb-2 flex items-center gap-2 text-sm font-medium">
+                                        <CalendarDays className="size-4 text-primary" />
+                                        {date
+                                            ? date.toLocaleDateString(
+                                                  undefined,
+                                                  {
+                                                      month: 'short',
+                                                      day: 'numeric',
+                                                      year: 'numeric',
+                                                  },
+                                              )
+                                            : 'Select a date'}
+                                    </div>
+
+                                    {!sportId && (
+                                        <p className="text-sm text-muted-foreground">
+                                            Choose a sport first.
+                                        </p>
+                                    )}
+
+                                    {sportId && !date && (
+                                        <p className="text-sm text-muted-foreground">
+                                            Choose a date to see open slots.
+                                        </p>
+                                    )}
+
+                                    {loadingSlots && (
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <Spinner className="size-4" />{' '}
+                                            Loading slots…
+                                        </div>
+                                    )}
+
+                                    {slotsError && (
+                                        <p className="text-sm text-destructive">
+                                            {slotsError}
+                                        </p>
+                                    )}
+
+                                    {availability?.closed && (
+                                        <p className="text-sm text-muted-foreground">
+                                            {availability.closed_reason ??
+                                                'Closed on this day.'}
+                                        </p>
+                                    )}
+
+                                    {availability &&
+                                        !availability.closed &&
+                                        availability.slots.length > 0 && (
+                                            <div className="flex flex-col gap-2">
+                                                {availability.slots.map(
+                                                    (item) => {
+                                                        const isSelected =
+                                                            slot === item.start;
+
+                                                        return (
+                                                            <button
+                                                                key={item.start}
+                                                                type="button"
+                                                                disabled={
+                                                                    !item.selectable
+                                                                }
+                                                                onClick={() =>
+                                                                    setSlot(
+                                                                        item.start,
+                                                                    )
+                                                                }
+                                                                className={cn(
+                                                                    'flex items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors',
+                                                                    isSelected
+                                                                        ? 'border-primary bg-primary/10 font-medium text-primary'
+                                                                        : item.selectable
+                                                                          ? 'border-input hover:border-primary'
+                                                                          : 'cursor-not-allowed border-input bg-muted text-muted-foreground',
+                                                                )}
+                                                            >
+                                                                <span>
+                                                                    {item.label}
+                                                                </span>
+                                                                <span
+                                                                    className={cn(
+                                                                        'text-xs',
+                                                                        isSelected
+                                                                            ? 'text-primary'
+                                                                            : slotMeta[
+                                                                                  item
+                                                                                      .status
+                                                                              ]
+                                                                                  .className,
+                                                                    )}
+                                                                >
+                                                                    {isSelected
+                                                                        ? 'Selected'
+                                                                        : slotMeta[
+                                                                              item
+                                                                                  .status
+                                                                          ]
+                                                                              .label}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    },
+                                                )}
+                                            </div>
+                                        )}
+
+                                    {form.errors.date && (
+                                        <p className="mt-2 text-sm text-destructive">
+                                            {form.errors.date}
+                                        </p>
+                                    )}
+                                    {form.errors.start_time && (
+                                        <p className="mt-2 text-sm text-destructive">
+                                            {form.errors.start_time}
+                                        </p>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Step 4 — details */}
+                    <Card className="lg:sticky lg:top-24 lg:self-start">
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                3 · Your details
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={submit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="guest_name">
+                                        Full name
+                                    </Label>
+                                    <Input
+                                        id="guest_name"
+                                        value={form.data.guest_name}
+                                        onChange={(event) =>
+                                            form.setData(
+                                                'guest_name',
+                                                event.target.value,
+                                            )
+                                        }
+                                        autoComplete="name"
+                                        required
+                                    />
+                                    {form.errors.guest_name && (
+                                        <p className="text-sm text-destructive">
+                                            {form.errors.guest_name}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="guest_phone">
+                                        Phone / Facebook
+                                    </Label>
+                                    <Input
+                                        id="guest_phone"
+                                        value={form.data.guest_phone}
+                                        onChange={(event) =>
+                                            form.setData(
+                                                'guest_phone',
+                                                event.target.value,
+                                            )
+                                        }
+                                        autoComplete="tel"
+                                        required
+                                    />
+                                    {form.errors.guest_phone && (
+                                        <p className="text-sm text-destructive">
+                                            {form.errors.guest_phone}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="notes">
+                                        Notes{' '}
+                                        <span className="text-muted-foreground">
+                                            (optional)
+                                        </span>
+                                    </Label>
+                                    <textarea
+                                        id="notes"
+                                        value={form.data.notes}
+                                        onChange={(event) =>
+                                            form.setData(
+                                                'notes',
+                                                event.target.value,
+                                            )
+                                        }
+                                        rows={3}
+                                        className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    />
+                                </div>
+
+                                <div className="rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
+                                    💵 Payment is made in person at the court.
+                                    The owner confirms your request before
+                                    it&apos;s final.
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled={!slot || form.processing}
+                                >
+                                    {form.processing ? (
+                                        <>
+                                            <Spinner className="size-4" />{' '}
+                                            Sending…
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Check className="size-4" /> Submit
+                                            request
+                                        </>
+                                    )}
+                                </Button>
+
+                                {!slot && (
+                                    <p className="text-center text-xs text-muted-foreground">
+                                        Select a sport, date and time slot to
+                                        continue.
+                                    </p>
+                                )}
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </PublicLayout>
+    );
+}
