@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\SportController as AdminSportController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FacilityController;
@@ -36,6 +38,12 @@ Route::middleware(['auth', 'verified', 'admin'])
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
         Route::patch('/bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
         Route::patch('/bookings/{booking}/decline', [AdminBookingController::class, 'decline'])->name('bookings.decline');
+
+        Route::get('/sports', [AdminSportController::class, 'index'])->name('sports.index');
+        Route::patch('/sports/{sport}', [AdminSportController::class, 'update'])->name('sports.update');
+
+        Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
+        Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
     });
 
 require __DIR__.'/settings.php';

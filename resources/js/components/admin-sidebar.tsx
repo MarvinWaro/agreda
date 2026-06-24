@@ -2,7 +2,9 @@ import { Link } from '@inertiajs/react';
 import {
     CalendarCheck,
     LayoutDashboard,
+    Settings,
     SquareArrowOutUpRight,
+    Tag,
 } from 'lucide-react';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -22,6 +24,8 @@ import type { NavItem } from '@/types';
 const manageNavItems: NavItem[] = [
     { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { title: 'Bookings', href: '/admin/bookings', icon: CalendarCheck },
+    { title: 'Sports & rates', href: '/admin/sports', icon: Tag },
+    { title: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar() {
