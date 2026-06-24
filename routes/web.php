@@ -3,9 +3,21 @@
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PricingController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities');
+Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+Route::get('/faqs', [FaqController::class, 'index'])->name('faqs');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 Route::get('/book', [BookingController::class, 'create'])->name('booking.create');
 Route::post('/book', [BookingController::class, 'store'])->name('booking.store');
