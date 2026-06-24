@@ -24,7 +24,7 @@ class BookingController extends Controller
     {
         $court = Court::query()->active()->first();
 
-        return Inertia::render('book', [
+        return Inertia::render('public/book', [
             'sports' => Sport::query()
                 ->active()
                 ->orderBy('name')
@@ -92,7 +92,7 @@ class BookingController extends Controller
     {
         $booking->load('sport');
 
-        return Inertia::render('booking-confirmation', [
+        return Inertia::render('public/booking-confirmation', [
             'booking' => [
                 'reference' => $booking->id,
                 'sport' => $booking->sport->name,

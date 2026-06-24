@@ -33,7 +33,7 @@ test('the booking page lists only active sports', function () {
     Sport::factory()->inactive()->create();
 
     $this->get(route('booking.create'))
-        ->assertInertia(fn (Assert $page) => $page->component('book')->has('sports', 3));
+        ->assertInertia(fn (Assert $page) => $page->component('public/book')->has('sports', 3));
 });
 
 test('a visitor can submit a booking request', function () {
@@ -128,7 +128,7 @@ test('the confirmation page shows the booking summary', function () {
 
     $this->get(route('booking.done', $booking))
         ->assertInertia(fn (Assert $page) => $page
-            ->component('booking-confirmation')
+            ->component('public/booking-confirmation')
             ->where('booking.reference', $booking->id)
             ->where('booking.status', 'pending')
             ->where('booking.sport', $sport->name));
