@@ -1,6 +1,8 @@
 import { Link } from '@inertiajs/react';
 import {
     CalendarCheck,
+    FileText,
+    HelpCircle,
     LayoutDashboard,
     Settings,
     ShieldCheck,
@@ -30,6 +32,13 @@ const navGroups: { label: string; items: NavItem[] }[] = [
             { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
             { title: 'Bookings', href: '/admin/bookings', icon: CalendarCheck },
             { title: 'Sports & rates', href: '/admin/sports', icon: Tag },
+        ],
+    },
+    {
+        label: 'Content',
+        items: [
+            { title: 'Pages', href: '/admin/pages', icon: FileText },
+            { title: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
         ],
     },
     {

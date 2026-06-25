@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SportController as AdminSportController;
@@ -63,6 +65,16 @@ Route::middleware(['auth', 'verified', 'admin'])
             Route::post('/roles', [AdminRoleController::class, 'store'])->name('roles.store');
             Route::put('/roles/{role}', [AdminRoleController::class, 'update'])->name('roles.update');
             Route::delete('/roles/{role}', [AdminRoleController::class, 'destroy'])->name('roles.destroy');
+        });
+
+        Route::middleware('permission:content.manage')->group(function () {
+            Route::get('/faqs', [AdminFaqController::class, 'index'])->name('faqs.index');
+            Route::post('/faqs', [AdminFaqController::class, 'store'])->name('faqs.store');
+            Route::put('/faqs/{faq}', [AdminFaqController::class, 'update'])->name('faqs.update');
+            Route::delete('/faqs/{faq}', [AdminFaqController::class, 'destroy'])->name('faqs.destroy');
+
+            Route::get('/pages', [AdminPageController::class, 'index'])->name('pages.index');
+            Route::put('/pages/{page}', [AdminPageController::class, 'update'])->name('pages.update');
         });
     });
 
