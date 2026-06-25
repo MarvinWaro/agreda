@@ -11,6 +11,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { dashboard, login, register } from '@/routes';
 
 type NavLink = {
     title: string;
@@ -42,13 +43,20 @@ function Wordmark() {
 }
 
 export default function PublicLayout({ children }: PropsWithChildren) {
-    const { url } = usePage();
+    const page = usePage();
+    const url = page.url;
+    const user = page.props.auth.user;
 
     const isActive = (href: string): boolean =>
         href === '/' ? url === '/' : url.startsWith(href);
 
     return (
-        <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <div className="relative flex min-h-screen flex-col bg-background text-foreground">
+            <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0 [background-image:linear-gradient(to_right,var(--grid)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_top,#000_30%,transparent_75%)] [background-size:48px_48px]"
+            />
+
             <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
                     <Wordmark />
@@ -75,6 +83,32 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     </nav>
 
                     <div className="flex items-center gap-2">
+                        {user ? (
+                            <Button
+                                asChild
+                                variant="ghost"
+                                className="hidden sm:inline-flex"
+                            >
+                                <Link href={dashboard()}>Dashboard</Link>
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    className="hidden sm:inline-flex"
+                                >
+                                    <Link href={login()}>Log in</Link>
+                                </Button>
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    className="hidden sm:inline-flex"
+                                >
+                                    <Link href={register()}>Get started</Link>
+                                </Button>
+                            </>
+                        )}
                         <Button asChild className="hidden sm:inline-flex">
                             <Link href="/book">Book now</Link>
                         </Button>
@@ -116,6 +150,38 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                             </Link>
                                         </SheetClose>
                                     ))}
+
+                                    <div className="my-2 border-t border-border" />
+
+                                    {user ? (
+                                        <SheetClose asChild>
+                                            <Link
+                                                href={dashboard()}
+                                                className="flex h-11 items-center rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
+                                            >
+                                                Dashboard
+                                            </Link>
+                                        </SheetClose>
+                                    ) : (
+                                        <>
+                                            <SheetClose asChild>
+                                                <Link
+                                                    href={login()}
+                                                    className="flex h-11 items-center rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
+                                                >
+                                                    Log in
+                                                </Link>
+                                            </SheetClose>
+                                            <SheetClose asChild>
+                                                <Link
+                                                    href={register()}
+                                                    className="flex h-11 items-center rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
+                                                >
+                                                    Get started
+                                                </Link>
+                                            </SheetClose>
+                                        </>
+                                    )}
                                     <SheetClose asChild>
                                         <Button asChild className="mt-3 h-11">
                                             <Link href="/book">Book now</Link>
@@ -128,9 +194,9 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 </div>
             </header>
 
-            <main className="flex-1">{children}</main>
+            <main className="relative z-10 flex-1">{children}</main>
 
-            <footer className="border-t border-border bg-muted/30">
+            <footer className="relative z-10 border-t border-border bg-muted/30">
                 <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
                     <div className="space-y-3">
                         <Wordmark />

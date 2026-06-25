@@ -3,7 +3,6 @@ import { CircleCheck } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import PublicLayout from '@/layouts/public-layout';
 
 type Props = {
     booking: {
@@ -46,7 +45,7 @@ function Row({ label, value }: { label: string; value: string }) {
 
 export default function BookingConfirmation({ booking }: Props) {
     return (
-        <PublicLayout>
+        <>
             <Head title="Request submitted" />
 
             <div className="mx-auto w-full max-w-xl px-4 py-12 sm:px-6">
@@ -111,6 +110,6 @@ export default function BookingConfirmation({ booking }: Props) {
                     </CardContent>
                 </Card>
             </div>
-        </PublicLayout>
+        </>
     );
 }

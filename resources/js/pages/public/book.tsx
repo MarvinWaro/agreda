@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import PublicLayout from '@/layouts/public-layout';
 import { cn } from '@/lib/utils';
 
 type SportOption = {
@@ -195,7 +194,7 @@ export default function Book({ sports }: Props) {
     };
 
     return (
-        <PublicLayout>
+        <>
             <Head title="Book the court" />
 
             <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
@@ -506,6 +505,6 @@ export default function Book({ sports }: Props) {
                     </Card>
                 </div>
             </div>
-        </PublicLayout>
+        </>
     );
 }
