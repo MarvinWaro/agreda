@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SportController as AdminSportController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FacilityController;
@@ -44,6 +45,13 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+        Route::middleware('permission:users.manage')->group(function () {
+            Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+            Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+            Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        });
     });
 
 require __DIR__.'/settings.php';

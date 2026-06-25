@@ -5,6 +5,7 @@ import {
     Settings,
     SquareArrowOutUpRight,
     Tag,
+    Users,
 } from 'lucide-react';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -21,11 +22,23 @@ import {
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
 
-const manageNavItems: NavItem[] = [
-    { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { title: 'Bookings', href: '/admin/bookings', icon: CalendarCheck },
-    { title: 'Sports & rates', href: '/admin/sports', icon: Tag },
-    { title: 'Settings', href: '/admin/settings', icon: Settings },
+const navGroups: { label: string; items: NavItem[] }[] = [
+    {
+        label: 'Manage',
+        items: [
+            { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+            { title: 'Bookings', href: '/admin/bookings', icon: CalendarCheck },
+            { title: 'Sports & rates', href: '/admin/sports', icon: Tag },
+        ],
+    },
+    {
+        label: 'User management',
+        items: [{ title: 'Users', href: '/admin/users', icon: Users }],
+    },
+    {
+        label: 'System',
+        items: [{ title: 'Settings', href: '/admin/settings', icon: Settings }],
+    },
 ];
 
 export function AdminSidebar() {
@@ -51,25 +64,27 @@ export function AdminSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <SidebarGroup className="px-2 py-0">
-                    <SidebarGroupLabel>Manage</SidebarGroupLabel>
-                    <SidebarMenu>
-                        {manageNavItems.map((item) => (
-                            <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton
-                                    asChild
-                                    isActive={isCurrentUrl(item.href)}
-                                    tooltip={{ children: item.title }}
-                                >
-                                    <Link href={item.href} prefetch>
-                                        {item.icon && <item.icon />}
-                                        <span>{item.title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroup>
+                {navGroups.map((group) => (
+                    <SidebarGroup key={group.label} className="px-2 py-0">
+                        <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+                        <SidebarMenu>
+                            {group.items.map((item) => (
+                                <SidebarMenuItem key={item.title}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={isCurrentUrl(item.href)}
+                                        tooltip={{ children: item.title }}
+                                    >
+                                        <Link href={item.href} prefetch>
+                                            {item.icon && <item.icon />}
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                ))}
             </SidebarContent>
 
             <SidebarFooter>
