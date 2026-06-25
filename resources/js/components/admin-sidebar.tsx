@@ -3,6 +3,7 @@ import {
     CalendarCheck,
     LayoutDashboard,
     Settings,
+    ShieldCheck,
     SquareArrowOutUpRight,
     Tag,
     Users,
@@ -33,7 +34,14 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     },
     {
         label: 'User management',
-        items: [{ title: 'Users', href: '/admin/users', icon: Users }],
+        items: [
+            { title: 'Users', href: '/admin/users', icon: Users },
+            {
+                title: 'Roles & permissions',
+                href: '/admin/roles',
+                icon: ShieldCheck,
+            },
+        ],
     },
     {
         label: 'System',

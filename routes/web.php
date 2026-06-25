@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SportController as AdminSportController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -55,6 +56,13 @@ Route::middleware(['auth', 'verified', 'admin'])
             Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
             Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
             Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        });
+
+        Route::middleware('permission:roles.manage')->group(function () {
+            Route::get('/roles', [AdminRoleController::class, 'index'])->name('roles.index');
+            Route::post('/roles', [AdminRoleController::class, 'store'])->name('roles.store');
+            Route::put('/roles/{role}', [AdminRoleController::class, 'update'])->name('roles.update');
+            Route::delete('/roles/{role}', [AdminRoleController::class, 'destroy'])->name('roles.destroy');
         });
     });
 
