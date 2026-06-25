@@ -79,7 +79,15 @@ function PermissionGrid({
     );
 }
 
-function RoleCard({ role, catalog }: { role: Role; catalog: string[] }) {
+function RoleCard({
+    role,
+    catalog,
+    onDelete,
+}: {
+    role: Role;
+    catalog: string[];
+    onDelete?: () => void;
+}) {
     const form = useForm<{ permissions: string[] }>({
         permissions: role.permissions,
     });
@@ -97,9 +105,23 @@ function RoleCard({ role, catalog }: { role: Role; catalog: string[] }) {
         <Card>
             <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base">{role.name}</CardTitle>
-                <span className="text-xs text-muted-foreground">
-                    {role.users_count} user{role.users_count === 1 ? '' : 's'}
-                </span>
+                <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">
+                        {role.users_count} user
+                        {role.users_count === 1 ? '' : 's'}
+                    </span>
+                    {onDelete && (
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className="size-8 text-muted-foreground hover:text-destructive"
+                            onClick={onDelete}
+                            aria-label={`Delete ${role.name}`}
+                        >
+                            <Trash2 className="size-4" />
+                        </Button>
+                    )}
+                </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 {role.protected ? (
@@ -253,20 +275,16 @@ export default function AdminRoles({ roles, permissions }: Props) {
 
                 <div className="grid gap-4">
                     {roles.map((role) => (
-                        <div key={role.id} className="relative">
-                            <RoleCard role={role} catalog={permissions} />
-                            {!role.protected && (
-                                <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="absolute top-4 right-4 text-muted-foreground hover:text-destructive"
-                                    onClick={() => setDeleteTarget(role)}
-                                    aria-label={`Delete ${role.name}`}
-                                >
-                                    <Trash2 className="size-4" />
-                                </Button>
-                            )}
-                        </div>
+                        <RoleCard
+                            key={role.id}
+                            role={role}
+                            catalog={permissions}
+                            onDelete={
+                                role.protected
+                                    ? undefined
+                                    : () => setDeleteTarget(role)
+                            }
+                        />
                     ))}
                 </div>
             </div>

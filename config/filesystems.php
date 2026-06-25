@@ -41,7 +41,9 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim((string) env('APP_URL', 'http://localhost'), '/').'/storage',
+            // Root-relative so uploaded images resolve against the current
+            // origin regardless of APP_URL / dev server host & port.
+            'url' => '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
