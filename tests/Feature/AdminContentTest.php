@@ -45,6 +45,27 @@ test('settings update validates the email', function () {
         ->assertSessionHasErrors('contact_email');
 });
 
+test('a pasted Google Maps iframe is normalised to its embed url', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->from(route('admin.settings.edit'))
+        ->put(route('admin.settings.update'), [
+            'map_embed_url' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12" width="600" height="450"></iframe>',
+        ])
+        ->assertRedirect(route('admin.settings.edit'))
+        ->assertSessionHasNoErrors();
+
+    expect(Setting::get('map_embed_url'))->toBe('https://www.google.com/maps/embed?pb=!1m18!1m12');
+});
+
+test('a non-embeddable map share link is rejected', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->from(route('admin.settings.edit'))
+        ->put(route('admin.settings.update'), [
+            'map_embed_url' => 'https://maps.app.goo.gl/mxzT6B7bXePzodgm8',
+        ])
+        ->assertSessionHasErrors('map_embed_url');
+});
+
 test('non-admins cannot access the sports admin', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('admin.sports.index'))
