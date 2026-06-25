@@ -28,7 +28,11 @@ Route::get('/book/{booking}/done', [BookingController::class, 'done'])->name('bo
 Route::get('/api/availability', [BookingController::class, 'slots'])->name('availability');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    // Authenticated accounts are admin/owner/staff; send them to the admin
+    // area (the starter's generic dashboard is no longer used).
+    Route::get('dashboard', fn () => auth()->user()?->can('admin.access')
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('home'))->name('dashboard');
 });
 
 Route::middleware(['auth', 'verified', 'admin'])
