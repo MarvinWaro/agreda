@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\SlideController as AdminSlideController;
 use App\Http\Controllers\Admin\SportController as AdminSportController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BookingController;
@@ -75,6 +77,16 @@ Route::middleware(['auth', 'verified', 'admin'])
 
             Route::get('/pages', [AdminPageController::class, 'index'])->name('pages.index');
             Route::put('/pages/{page}', [AdminPageController::class, 'update'])->name('pages.update');
+
+            Route::get('/slides', [AdminSlideController::class, 'index'])->name('slides.index');
+            Route::post('/slides', [AdminSlideController::class, 'store'])->name('slides.store');
+            Route::put('/slides/{slide}', [AdminSlideController::class, 'update'])->name('slides.update');
+            Route::delete('/slides/{slide}', [AdminSlideController::class, 'destroy'])->name('slides.destroy');
+
+            Route::get('/events', [AdminEventController::class, 'index'])->name('events.index');
+            Route::post('/events', [AdminEventController::class, 'store'])->name('events.store');
+            Route::put('/events/{event}', [AdminEventController::class, 'update'])->name('events.update');
+            Route::delete('/events/{event}', [AdminEventController::class, 'destroy'])->name('events.destroy');
         });
     });
 

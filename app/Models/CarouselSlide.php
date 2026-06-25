@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
  * @property string $title
- * @property string $image_path
+ * @property string|null $image_path
  * @property string|null $caption
  * @property string|null $link_url
  * @property int $sort_order
@@ -28,6 +29,16 @@ class CarouselSlide extends Model
         'sort_order',
         'is_visible',
     ];
+
+    /**
+     * Public URL for the slide image, or null when none is set.
+     */
+    public function imageUrl(): ?string
+    {
+        return $this->image_path === null
+            ? null
+            : Storage::disk('public')->url($this->image_path);
+    }
 
     /**
      * @param  Builder<CarouselSlide>  $query

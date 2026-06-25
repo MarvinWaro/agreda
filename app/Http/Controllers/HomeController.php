@@ -16,7 +16,15 @@ class HomeController extends Controller
             'slides' => CarouselSlide::query()
                 ->visible()
                 ->ordered()
-                ->get(['id', 'title', 'caption', 'image_path', 'link_url']),
+                ->get()
+                ->map(fn (CarouselSlide $slide): array => [
+                    'id' => $slide->id,
+                    'title' => $slide->title,
+                    'caption' => $slide->caption,
+                    'image_path' => $slide->imageUrl(),
+                    'link_url' => $slide->link_url,
+                ])
+                ->all(),
             'events' => Event::query()
                 ->featured()
                 ->orderBy('event_date')
@@ -27,7 +35,7 @@ class HomeController extends Controller
                     'title' => $event->title,
                     'description' => $event->description,
                     'date' => $event->event_date?->format('M j, Y'),
-                    'image_path' => $event->image_path,
+                    'image_path' => $event->imageUrl(),
                 ])
                 ->all(),
             'sports' => Sport::query()

@@ -1,8 +1,10 @@
 import { Link } from '@inertiajs/react';
 import {
     CalendarCheck,
+    CalendarDays,
     FileText,
     HelpCircle,
+    Images,
     LayoutDashboard,
     Settings,
     ShieldCheck,
@@ -37,6 +39,8 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     {
         label: 'Content',
         items: [
+            { title: 'Carousel', href: '/admin/slides', icon: Images },
+            { title: 'Events', href: '/admin/events', icon: CalendarDays },
             { title: 'Pages', href: '/admin/pages', icon: FileText },
             { title: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
         ],
