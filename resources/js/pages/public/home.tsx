@@ -48,7 +48,7 @@ export default function Home({ slides, events, sports }: Props) {
     const [date, setDate] = useState<string>('');
     const [autoplay] = useState(() =>
         Autoplay({
-            delay: 2000,
+            delay: 3000,
             stopOnInteraction: false,
             stopOnMouseEnter: true,
         }),
@@ -81,7 +81,7 @@ export default function Home({ slides, events, sports }: Props) {
                     <CarouselContent>
                         {heroSlides.map((slide) => (
                             <CarouselItem key={slide.id}>
-                                <div className="relative flex h-72 items-end overflow-hidden rounded-xl bg-zinc-900 sm:h-80">
+                                <div className="relative flex h-72 items-center justify-center overflow-hidden rounded-xl bg-zinc-900 sm:h-80">
                                     {slide.image_path && (
                                         <img
                                             src={slide.image_path}
@@ -89,12 +89,12 @@ export default function Home({ slides, events, sports }: Props) {
                                             className="absolute inset-0 size-full object-cover"
                                         />
                                     )}
-                                    {/* Dark→light gradient keeps the text readable over any image. */}
+                                    {/* Dark overlay keeps the centered white text readable over any image. */}
                                     <div
                                         aria-hidden
-                                        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
+                                        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/30"
                                     />
-                                    <div className="relative max-w-md px-6 pb-8 text-left sm:px-12 sm:pb-10">
+                                    <div className="relative max-w-xl px-6 text-center">
                                         <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                                             {slide.title}
                                         </h1>
