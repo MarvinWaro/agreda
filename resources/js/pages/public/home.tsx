@@ -65,11 +65,11 @@ export default function Home({ slides, events, sports }: Props) {
 
             {/* Hero carousel */}
             <section className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6">
-                <Carousel className="w-full">
+                <Carousel className="w-full" opts={{ loop: true }}>
                     <CarouselContent>
                         {heroSlides.map((slide) => (
                             <CarouselItem key={slide.id}>
-                                <div className="relative flex h-72 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/15 via-primary/5 to-background sm:h-80">
+                                <div className="relative flex h-72 items-center overflow-hidden rounded-xl bg-zinc-900 sm:h-80">
                                     {slide.image_path && (
                                         <img
                                             src={slide.image_path}
@@ -77,12 +77,17 @@ export default function Home({ slides, events, sports }: Props) {
                                             className="absolute inset-0 size-full object-cover"
                                         />
                                     )}
-                                    <div className="relative max-w-xl px-6 text-center">
-                                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                                    {/* Dark→light gradient keeps the text readable over any image. */}
+                                    <div
+                                        aria-hidden
+                                        className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"
+                                    />
+                                    <div className="relative max-w-md px-6 text-left sm:px-12">
+                                        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                                             {slide.title}
                                         </h1>
                                         {slide.caption && (
-                                            <p className="mt-2 text-sm text-muted-foreground">
+                                            <p className="mt-2 text-sm text-white/80">
                                                 {slide.caption}
                                             </p>
                                         )}
