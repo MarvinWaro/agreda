@@ -87,7 +87,7 @@ export default function AdminSports({ sports }: { sports: Sport[] }) {
         <>
             <Head title="Admin · Sports & rates" />
 
-            <div className="mx-auto w-full max-w-3xl space-y-6 p-4">
+            <div className="space-y-6">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">
                         Sports &amp; rates

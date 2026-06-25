@@ -1,16 +1,9 @@
 import { Link } from '@inertiajs/react';
 import {
     CalendarCheck,
-    CalendarDays,
-    FileText,
-    HelpCircle,
-    Images,
     LayoutDashboard,
     Settings,
-    ShieldCheck,
     SquareArrowOutUpRight,
-    Tag,
-    Users,
 } from 'lucide-react';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -33,32 +26,8 @@ const navGroups: { label: string; items: NavItem[] }[] = [
         items: [
             { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
             { title: 'Bookings', href: '/admin/bookings', icon: CalendarCheck },
-            { title: 'Sports & rates', href: '/admin/sports', icon: Tag },
+            { title: 'Settings', href: '/settings/profile', icon: Settings },
         ],
-    },
-    {
-        label: 'Content',
-        items: [
-            { title: 'Carousel', href: '/admin/slides', icon: Images },
-            { title: 'Events', href: '/admin/events', icon: CalendarDays },
-            { title: 'Pages', href: '/admin/pages', icon: FileText },
-            { title: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
-        ],
-    },
-    {
-        label: 'User management',
-        items: [
-            { title: 'Users', href: '/admin/users', icon: Users },
-            {
-                title: 'Roles & permissions',
-                href: '/admin/roles',
-                icon: ShieldCheck,
-            },
-        ],
-    },
-    {
-        label: 'System',
-        items: [{ title: 'Settings', href: '/admin/settings', icon: Settings }],
     },
 ];
 

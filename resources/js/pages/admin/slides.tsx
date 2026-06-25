@@ -231,7 +231,7 @@ export default function AdminSlides({ slides }: { slides: Slide[] }) {
         <>
             <Head title="Admin · Carousel" />
 
-            <div className="mx-auto w-full max-w-4xl space-y-6 p-4">
+            <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-xl font-bold tracking-tight">

@@ -224,7 +224,7 @@ export default function AdminEvents({ events }: { events: EventItem[] }) {
         <>
             <Head title="Admin · Events" />
 
-            <div className="mx-auto w-full max-w-4xl space-y-6 p-4">
+            <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-xl font-bold tracking-tight">

@@ -82,7 +82,7 @@ export default function AdminPages({ pages }: { pages: Page[] }) {
         <>
             <Head title="Admin · Pages" />
 
-            <div className="mx-auto w-full max-w-2xl space-y-6 p-4">
+            <div className="max-w-2xl space-y-6">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">Pages</h1>
                     <p className="text-sm text-muted-foreground">

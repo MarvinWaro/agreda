@@ -61,7 +61,7 @@ export default function AdminDashboard({ stats, latest }: Props) {
         <>
             <Head title="Admin · Dashboard" />
 
-            <div className="space-y-6 p-4">
+            <div className="space-y-6 p-4 sm:p-6">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">
                         Overview

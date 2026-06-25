@@ -47,7 +47,7 @@ export default function AdminSettings({ settings }: Props) {
         <>
             <Head title="Admin · Settings" />
 
-            <div className="mx-auto w-full max-w-2xl space-y-6 p-4">
+            <div className="max-w-2xl space-y-6">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">
                         Settings
