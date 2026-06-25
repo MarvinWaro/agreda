@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Facebook, Menu, Phone } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,9 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { usePermissions } from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
-import { dashboard, login, register } from '@/routes';
+import { dashboard, login, logout, register } from '@/routes';
 
 type NavLink = {
     title: string;
@@ -46,9 +47,15 @@ export default function PublicLayout({ children }: PropsWithChildren) {
     const page = usePage();
     const url = page.url;
     const user = page.props.auth.user;
+    const { can } = usePermissions();
+    const isAdmin = can('admin.access');
 
     const isActive = (href: string): boolean =>
         href === '/' ? url === '/' : url.startsWith(href);
+
+    const handleLogout = (): void => {
+        router.flushAll();
+    };
 
     return (
         <div className="relative flex min-h-screen flex-col bg-background text-foreground">
@@ -84,13 +91,29 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                     <div className="flex items-center gap-2">
                         {user ? (
-                            <Button
-                                asChild
-                                variant="ghost"
-                                className="hidden sm:inline-flex"
-                            >
-                                <Link href={dashboard()}>Dashboard</Link>
-                            </Button>
+                            isAdmin ? (
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    className="hidden sm:inline-flex"
+                                >
+                                    <Link href={dashboard()}>Dashboard</Link>
+                                </Button>
+                            ) : (
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    className="hidden sm:inline-flex"
+                                >
+                                    <Link
+                                        href={logout()}
+                                        as="button"
+                                        onClick={handleLogout}
+                                    >
+                                        Log out
+                                    </Link>
+                                </Button>
+                            )
                         ) : (
                             <>
                                 <Button
@@ -154,14 +177,27 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                     <div className="my-2 border-t border-border" />
 
                                     {user ? (
-                                        <SheetClose asChild>
-                                            <Link
-                                                href={dashboard()}
-                                                className="flex h-11 items-center rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
-                                            >
-                                                Dashboard
-                                            </Link>
-                                        </SheetClose>
+                                        isAdmin ? (
+                                            <SheetClose asChild>
+                                                <Link
+                                                    href={dashboard()}
+                                                    className="flex h-11 items-center rounded-md px-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                            </SheetClose>
+                                        ) : (
+                                            <SheetClose asChild>
+                                                <Link
+                                                    href={logout()}
+                                                    as="button"
+                                                    onClick={handleLogout}
+                                                    className="flex h-11 w-full items-center rounded-md px-3 text-left text-base font-medium text-foreground transition-colors hover:bg-accent"
+                                                >
+                                                    Log out
+                                                </Link>
+                                            </SheetClose>
+                                        )
                                     ) : (
                                         <>
                                             <SheetClose asChild>
