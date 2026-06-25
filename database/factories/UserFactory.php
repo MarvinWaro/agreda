@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Enums\UserRole;
 use App\Models\User;
+use App\Support\Rbac;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -38,28 +38,29 @@ class UserFactory extends Factory
     }
 
     /**
-     * Give the user a specific admin-panel role.
+     * Assign a role to the user once created, ensuring the role exists.
      */
-    public function role(UserRole $role): static
+    public function assignedRole(string $role): static
     {
-        return $this->state(fn (array $attributes): array => [
-            'role' => $role,
-        ]);
+        return $this->afterCreating(function (User $user) use ($role): void {
+            Rbac::sync();
+            $user->assignRole($role);
+        });
     }
 
     public function admin(): static
     {
-        return $this->role(UserRole::Admin);
+        return $this->assignedRole(Rbac::SUPER_ADMIN);
     }
 
     public function owner(): static
     {
-        return $this->role(UserRole::Owner);
+        return $this->assignedRole(Rbac::OWNER);
     }
 
     public function staff(): static
     {
-        return $this->role(UserRole::Staff);
+        return $this->assignedRole(Rbac::STAFF);
     }
 
     /**

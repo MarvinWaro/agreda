@@ -17,7 +17,7 @@ class EnsureUserCanAccessAdmin
     {
         $user = $request->user();
 
-        if ($user === null || ! $user->canAccessAdmin()) {
+        if ($user === null || $user->cannot('admin.access')) {
             abort(403);
         }
 

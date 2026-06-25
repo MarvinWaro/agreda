@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RolePermissionSeeder::class);
+
         $court = $this->seedCourt();
         $this->seedSports($court);
         $this->seedOperatingHours($court);
@@ -75,7 +77,7 @@ class DatabaseSeeder extends Seeder
     private function seedUsers(): void
     {
         if (! User::query()->where('email', 'owner@agreda.test')->exists()) {
-            User::factory()->owner()->create([
+            User::factory()->admin()->create([
                 'name' => 'AGREDA Owner',
                 'email' => 'owner@agreda.test',
             ]);

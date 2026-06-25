@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\BookingStatus;
-use App\Enums\UserRole;
 use App\Models\Booking;
 use App\Models\Court;
 use App\Models\OperatingHour;
@@ -52,14 +51,12 @@ test('the occupying scope returns only pending and confirmed bookings', function
     expect(Booking::query()->occupying()->count())->toBe(2);
 });
 
-test('user role casts to the UserRole enum and gates admin access', function () {
+test('an admin role grants admin access while a role-less user is denied', function () {
     $admin = User::factory()->admin()->create();
     $guest = User::factory()->create();
 
-    expect($admin->role)->toBe(UserRole::Admin)
-        ->and($admin->canAccessAdmin())->toBeTrue()
-        ->and($guest->role)->toBeNull()
-        ->and($guest->canAccessAdmin())->toBeFalse();
+    expect($admin->can('admin.access'))->toBeTrue()
+        ->and($guest->can('admin.access'))->toBeFalse();
 });
 
 test('the database seeder provisions a court, four sports, hours and an owner', function () {
@@ -74,7 +71,7 @@ test('the database seeder provisions a court, four sports, hours and an owner', 
     $owner = User::query()->where('email', 'owner@agreda.test')->first();
 
     expect($owner)->not->toBeNull()
-        ->and($owner->role)->toBe(UserRole::Owner);
+        ->and($owner->hasRole('Super Admin'))->toBeTrue();
 });
 
 test('the database seeder is idempotent', function () {
