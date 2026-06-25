@@ -1,4 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
+import Autoplay from 'embla-carousel-autoplay';
 import { CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -45,6 +46,13 @@ type Props = {
 export default function Home({ slides, events, sports }: Props) {
     const [sport, setSport] = useState<string>('');
     const [date, setDate] = useState<string>('');
+    const [autoplay] = useState(() =>
+        Autoplay({
+            delay: 2000,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true,
+        }),
+    );
 
     const heroSlides: Slide[] =
         slides.length > 0
@@ -65,11 +73,15 @@ export default function Home({ slides, events, sports }: Props) {
 
             {/* Hero carousel */}
             <section className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6">
-                <Carousel className="w-full" opts={{ loop: true }}>
+                <Carousel
+                    className="w-full"
+                    opts={{ loop: true }}
+                    plugins={heroSlides.length > 1 ? [autoplay] : []}
+                >
                     <CarouselContent>
                         {heroSlides.map((slide) => (
                             <CarouselItem key={slide.id}>
-                                <div className="relative flex h-72 items-center overflow-hidden rounded-xl bg-zinc-900 sm:h-80">
+                                <div className="relative flex h-72 items-end overflow-hidden rounded-xl bg-zinc-900 sm:h-80">
                                     {slide.image_path && (
                                         <img
                                             src={slide.image_path}
@@ -80,9 +92,9 @@ export default function Home({ slides, events, sports }: Props) {
                                     {/* Dark→light gradient keeps the text readable over any image. */}
                                     <div
                                         aria-hidden
-                                        className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"
+                                        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
                                     />
-                                    <div className="relative max-w-md px-6 text-left sm:px-12">
+                                    <div className="relative max-w-md px-6 pb-8 text-left sm:px-12 sm:pb-10">
                                         <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                                             {slide.title}
                                         </h1>
