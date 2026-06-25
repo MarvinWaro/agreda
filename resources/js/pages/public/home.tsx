@@ -170,7 +170,15 @@ export default function Home({ slides, events, sports }: Props) {
                     <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {events.map((event) => (
                             <Card key={event.id} className="overflow-hidden">
-                                <div className="h-32 bg-gradient-to-br from-primary/15 to-muted" />
+                                {event.image_path ? (
+                                    <img
+                                        src={event.image_path}
+                                        alt=""
+                                        className="h-32 w-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="h-32 bg-gradient-to-br from-primary/15 to-muted" />
+                                )}
                                 <CardContent className="p-4">
                                     {event.date && (
                                         <div className="text-xs font-medium text-primary">
