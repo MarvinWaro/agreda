@@ -435,9 +435,13 @@ export default function Book({ sports }: Props) {
                                                                     )}
                                                                 >
                                                                     <span>
-                                                                        {
-                                                                            item.label
-                                                                        }
+                                                                        {formatTime(
+                                                                            item.start,
+                                                                        )}{' '}
+                                                                        –{' '}
+                                                                        {formatTime(
+                                                                            item.end,
+                                                                        )}
                                                                     </span>
                                                                     <span
                                                                         className={cn(
