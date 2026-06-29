@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { CalendarDays, Check } from 'lucide-react';
+import { CalendarDays, Check, Minus, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -111,10 +111,10 @@ function Stepper({ current }: { current: number }) {
 export default function Book({ sports }: Props) {
     const [sportId, setSportId] = useState<number | null>(null);
     const [date, setDate] = useState<Date | undefined>(undefined);
-    // A booking spans a contiguous run of slots: [startIdx, endIdx] inclusive.
-    // While picking, endIdx is null (start chosen, waiting for the end).
+    // A booking is a start slot plus a duration in hours, so the end time is
+    // always explicit instead of inferred from which slot was clicked last.
     const [startIdx, setStartIdx] = useState<number | null>(null);
-    const [endIdx, setEndIdx] = useState<number | null>(null);
+    const [hours, setHours] = useState(1);
     const [availability, setAvailability] = useState<Availability | null>(null);
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [slotsError, setSlotsError] = useState<string | null>(null);
@@ -135,46 +135,51 @@ export default function Book({ sports }: Props) {
     const requestRef = useRef(0);
 
     const slots = availability?.slots ?? [];
-    const rangeChosen = startIdx !== null && endIdx !== null;
 
     const resetSelection = () => {
         setStartIdx(null);
-        setEndIdx(null);
+        setHours(1);
     };
 
-    // Every slot from `from` to `to` is free and butts up against the next.
-    const canSpan = (from: number, to: number): boolean => {
-        for (let i = from; i <= to; i++) {
+    // How many contiguous, free hour-slots run from `start` onward.
+    const maxHoursFrom = (start: number): number => {
+        let count = 0;
+
+        for (let i = start; i < slots.length; i++) {
             if (!slots[i].selectable) {
-                return false;
+                break;
             }
 
-            if (i > from && slots[i - 1].end !== slots[i].start) {
-                return false;
+            if (i > start && slots[i - 1].end !== slots[i].start) {
+                break;
             }
+
+            count++;
         }
 
-        return true;
+        return count;
     };
 
-    const handleSlotClick = (index: number) => {
-        // Start a fresh selection when nothing is pending, a range is already
-        // complete, or the click lands before the current start.
-        if (startIdx === null || endIdx !== null || index < startIdx) {
-            setStartIdx(index);
-            setEndIdx(null);
+    const maxHours = startIdx !== null ? maxHoursFrom(startIdx) : 0;
+    const rangeChosen = startIdx !== null;
+    const endIdx =
+        startIdx !== null
+            ? startIdx + Math.min(hours, Math.max(maxHours, 1)) - 1
+            : null;
 
+    const handleSlotClick = (index: number) => {
+        if (!slots[index].selectable) {
             return;
         }
 
-        // A start is pending and the click is at/after it — extend if the whole
-        // span is free and contiguous, otherwise restart from here.
-        if (canSpan(startIdx, index)) {
-            setEndIdx(index);
-        } else {
-            setStartIdx(index);
-            setEndIdx(null);
-        }
+        setStartIdx(index);
+        setHours(1);
+    };
+
+    const adjustHours = (delta: number) => {
+        setHours((current) =>
+            Math.min(Math.max(current + delta, 1), Math.max(maxHours, 1)),
+        );
     };
 
     const loadSlots = (
@@ -389,10 +394,8 @@ export default function Book({ sports }: Props) {
                                         <>
                                             <p className="mb-2 text-xs text-muted-foreground">
                                                 {startIdx === null
-                                                    ? 'Tap a start time, then an end time for a multi-hour booking.'
-                                                    : endIdx === null
-                                                      ? `${formatTime(slots[startIdx].start)} selected — tap an end time, or submit for a single hour.`
-                                                      : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
+                                                    ? 'Tap a start time, then set how many hours you need.'
+                                                    : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
                                             </p>
                                             <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6 md:grid-cols-8">
                                                 {availability.slots.map(
@@ -410,8 +413,7 @@ export default function Book({ sports }: Props) {
                                                                 type="button"
                                                                 title={`${formatTime(item.start)} – ${formatTime(item.end)} · ${slotMeta[item.status].label}`}
                                                                 disabled={
-                                                                    !item.selectable &&
-                                                                    !isInRange
+                                                                    !item.selectable
                                                                 }
                                                                 onClick={() =>
                                                                     handleSlotClick(
@@ -456,6 +458,51 @@ export default function Book({ sports }: Props) {
                                                     Booked / past
                                                 </span>
                                             </div>
+
+                                            {startIdx !== null && (
+                                                <div className="mt-4 flex items-center gap-3">
+                                                    <span className="text-xs font-medium">
+                                                        Duration
+                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="size-7"
+                                                            onClick={() =>
+                                                                adjustHours(-1)
+                                                            }
+                                                            disabled={
+                                                                hours <= 1
+                                                            }
+                                                        >
+                                                            <Minus className="size-3.5" />
+                                                        </Button>
+                                                        <span className="w-20 text-center text-sm font-medium">
+                                                            {hours}{' '}
+                                                            {hours === 1
+                                                                ? 'hour'
+                                                                : 'hours'}
+                                                        </span>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="size-7"
+                                                            onClick={() =>
+                                                                adjustHours(1)
+                                                            }
+                                                            disabled={
+                                                                hours >=
+                                                                maxHours
+                                                            }
+                                                        >
+                                                            <Plus className="size-3.5" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </>
                                     )}
 
