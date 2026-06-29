@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\Admin\ClubController as AdminClubController;
+use App\Http\Controllers\Admin\ClubMemberController as AdminClubMemberController;
+use App\Http\Controllers\Admin\ClubRoleController as AdminClubRoleController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
@@ -11,10 +14,13 @@ use App\Http\Controllers\Admin\SlideController as AdminSlideController;
 use App\Http\Controllers\Admin\SportController as AdminSportController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ClubController;
+use App\Http\Controllers\ClubMembershipController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PricingController;
 use Illuminate\Support\Facades\Route;
@@ -32,12 +38,15 @@ Route::post('/book', [BookingController::class, 'store'])->name('booking.store')
 Route::get('/book/{booking}/done', [BookingController::class, 'done'])->name('booking.done');
 Route::get('/api/availability', [BookingController::class, 'slots'])->name('availability');
 
+Route::get('/clubs', [ClubController::class, 'index'])->name('clubs.index');
+Route::get('/clubs/{club:slug}/join', [ClubMembershipController::class, 'create'])->name('club.join.create');
+Route::post('/clubs/{club:slug}/join', [ClubMembershipController::class, 'store'])->name('club.join.store');
+Route::get('/club-members/{member}/done', [ClubMembershipController::class, 'done'])->name('club.join.done');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Authenticated accounts are admin/owner/staff; send them to the admin
-    // area (the starter's generic dashboard is no longer used).
-    Route::get('dashboard', fn () => auth()->user()?->can('admin.access')
-        ? redirect()->route('admin.dashboard')
-        : redirect()->route('home'))->name('dashboard');
+    // Admin/owner/staff get redirected to the admin area; club members see
+    // their application status on the "My membership" page.
+    Route::get('dashboard', [MembershipController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware(['auth', 'verified', 'admin'])
@@ -87,6 +96,23 @@ Route::middleware(['auth', 'verified', 'admin'])
             Route::post('/events', [AdminEventController::class, 'store'])->name('events.store');
             Route::put('/events/{event}', [AdminEventController::class, 'update'])->name('events.update');
             Route::delete('/events/{event}', [AdminEventController::class, 'destroy'])->name('events.destroy');
+        });
+
+        Route::middleware('permission:clubs.manage')->group(function () {
+            Route::get('/clubs', [AdminClubController::class, 'index'])->name('clubs.index');
+            Route::post('/clubs', [AdminClubController::class, 'store'])->name('clubs.store');
+            Route::get('/clubs/{club}', [AdminClubController::class, 'show'])->name('clubs.show');
+            Route::put('/clubs/{club}', [AdminClubController::class, 'update'])->name('clubs.update');
+            Route::delete('/clubs/{club}', [AdminClubController::class, 'destroy'])->name('clubs.destroy');
+
+            Route::post('/clubs/{club}/roles', [AdminClubRoleController::class, 'store'])->name('clubs.roles.store');
+            Route::put('/clubs/{club}/roles/{role}', [AdminClubRoleController::class, 'update'])->name('clubs.roles.update');
+            Route::delete('/clubs/{club}/roles/{role}', [AdminClubRoleController::class, 'destroy'])->name('clubs.roles.destroy');
+
+            Route::get('/club-members', [AdminClubMemberController::class, 'index'])->name('club-members.index');
+            Route::patch('/club-members/{member}/approve', [AdminClubMemberController::class, 'approve'])->name('club-members.approve');
+            Route::patch('/club-members/{member}/decline', [AdminClubMemberController::class, 'decline'])->name('club-members.decline');
+            Route::put('/club-members/{member}', [AdminClubMemberController::class, 'update'])->name('club-members.update');
         });
     });
 

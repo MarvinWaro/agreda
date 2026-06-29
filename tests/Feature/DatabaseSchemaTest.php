@@ -59,7 +59,7 @@ test('an admin role grants admin access while a role-less user is denied', funct
         ->and($guest->can('admin.access'))->toBeFalse();
 });
 
-test('the database seeder provisions a court, four sports, hours and an owner', function () {
+test('the database seeder provisions a court, four sports, hours and an admin', function () {
     $this->seed();
 
     expect(Court::count())->toBe(1)
@@ -68,10 +68,10 @@ test('the database seeder provisions a court, four sports, hours and an owner', 
         ->and(Setting::count())->toBeGreaterThanOrEqual(5)
         ->and(Court::first()->sports)->toHaveCount(4);
 
-    $owner = User::query()->where('email', 'owner@agreda.test')->first();
+    $admin = User::query()->where('email', 'admin@agreda.test')->first();
 
-    expect($owner)->not->toBeNull()
-        ->and($owner->hasRole('Super Admin'))->toBeTrue();
+    expect($admin)->not->toBeNull()
+        ->and($admin->hasRole('Super Admin'))->toBeTrue();
 });
 
 test('the database seeder is idempotent', function () {

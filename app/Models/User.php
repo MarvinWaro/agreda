@@ -30,6 +30,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Booking> $bookings
+ * @property-read Collection<int, ClubMember> $clubMemberships
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -44,6 +45,14 @@ class User extends Authenticatable implements PasskeyUser
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * @return HasMany<ClubMember, $this>
+     */
+    public function clubMemberships(): HasMany
+    {
+        return $this->hasMany(ClubMember::class);
     }
 
     /**

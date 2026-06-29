@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family: system-ui, sans-serif; }
+</style>
+</helmet>
+
+<!-- ============ MAIN TITLE ============ -->
+<div style="position:absolute;left:80px;top:24px;width:600px">
+  <div style="font:700 30px Caveat,cursive;color:#1f1f1f">AGREDA PHASE III — Website Wireframes</div>
+  <div style="font:13px system-ui;color:#777;margin-top:2px">Low-fi structure &amp; flow only. Built to map onto shadcn: Card, Calendar, Tabs, Dialog, Table, Accordion.</div>
+</div>
+
+<div style="position:absolute;left:740px;top:18px;width:280px;background:#fef4a8;padding:12px 14px;font:13px/1.45 system-ui;color:#5a4b12;box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(-1.2deg)">
+  <b>Flow:</b> visitor picks sport → date → time slot → submits a request. Owner confirms availability. Payment is in person.
+</div>
+
+<!-- ============ SECTION: PUBLIC SITE ============ -->
+<div style="position:absolute;left:80px;top:120px;font:600 20px Caveat,cursive;color:#ef5b2b">① PUBLIC SITE</div>
+
+<!-- ---- HOME A ---- -->
+<div style="position:absolute;left:80px;top:190px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Home — Variant A (classic carousel hero)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:5px;padding:7px 9px;background:#f6f6f6;border-bottom:1.5px solid #2b2b2b">
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="flex:1;height:13px;border-radius:7px;background:#ececec;margin-left:6px"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span style="color:#ef5b2b;font-weight:600">Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="position:relative;height:175px;display:flex;align-items:center;justify-content:center;border-bottom:1px dashed #cfcfcf;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e8e8e8 7px,#e8e8e8 14px)">
+      <div style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;border:1.5px solid #999;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;background:#fff">‹</div>
+      <div style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;border:1.5px solid #999;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;background:#fff">›</div>
+      <div style="text-align:center;padding:0 30px">
+        <div style="font:10px ui-monospace,monospace;color:#999;margin-bottom:8px">HERO CAROUSEL — gym photos &amp; featured events</div>
+        <div style="font:700 17px Caveat,cursive;color:#3a3a3a">Book the Court at AGREDA PHASE III</div>
+        <div style="display:inline-block;margin-top:8px;background:#ef5b2b;color:#fff;font:600 11px system-ui;padding:6px 16px;border-radius:5px">Book Now →</div>
+      </div>
+      <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px">
+        <div style="width:7px;height:7px;border-radius:50%;background:#ef5b2b"></div><div style="width:7px;height:7px;border-radius:50%;background:#cfcfcf"></div><div style="width:7px;height:7px;border-radius:50%;background:#cfcfcf"></div>
+      </div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font:600 12px system-ui;color:#555;margin-bottom:7px">One court — four sports</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Basketball</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Volleyball</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Futsal</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Pickleball</span>
+      </div>
+      <div style="font:600 12px system-ui;color:#555;margin-bottom:7px">Featured events</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div style="border:1px dashed #c8c8c8;border-radius:4px;padding:6px"><div style="height:42px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;border-radius:3px;background:#dcdcdc;margin-bottom:4px"></div><div style="height:6px;width:60%;border-radius:3px;background:#dcdcdc"></div></div>
+        <div style="border:1px dashed #c8c8c8;border-radius:4px;padding:6px"><div style="height:42px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;border-radius:3px;background:#dcdcdc;margin-bottom:4px"></div><div style="height:6px;width:60%;border-radius:3px;background:#dcdcdc"></div></div>
+        <div style="border:1px dashed #c8c8c8;border-radius:4px;padding:6px"><div style="height:42px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;border-radius:3px;background:#dcdcdc;margin-bottom:4px"></div><div style="height:6px;width:60%;border-radius:3px;background:#dcdcdc"></div></div>
+      </div>
+      <div style="margin-top:12px;border-top:1px dashed #cfcfcf;padding-top:8px;font:10px ui-monospace,monospace;color:#aaa;text-align:center">footer — hours · location · facebook</div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- HOME B ---- -->
+<div style="position:absolute;left:620px;top:190px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Home — Variant B (split hero + quick-book)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:5px;padding:7px 9px;background:#f6f6f6;border-bottom:1.5px solid #2b2b2b">
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="flex:1;height:13px;border-radius:7px;background:#ececec;margin-left:6px"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span style="color:#ef5b2b;font-weight:600">Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px dashed #cfcfcf">
+      <div style="padding:16px 14px;display:flex;flex-direction:column;justify-content:center">
+        <div style="font:700 20px Caveat,cursive;color:#2b2b2b;line-height:1.1">Your game.<br>Your court.</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin:10px 0">
+          <div style="height:7px;border-radius:4px;background:#dcdcdc"></div><div style="height:7px;width:80%;border-radius:4px;background:#dcdcdc"></div>
+        </div>
+        <div style="display:inline-block;align-self:flex-start;background:#ef5b2b;color:#fff;font:600 11px system-ui;padding:7px 16px;border-radius:5px">Book Now →</div>
+      </div>
+      <div style="min-height:150px;display:flex;align-items:center;justify-content:center;border-left:1px dashed #cfcfcf;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e8e8e8 7px,#e8e8e8 14px);font:10px ui-monospace,monospace;color:#999">gym photo</div>
+    </div>
+    <div style="padding:12px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:600 12px system-ui;color:#555;margin-bottom:7px">⚡ Quick check availability</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Sport ▾</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Date ▾</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Time ▾</div>
+        <div style="background:#ef5b2b;color:#fff;font:600 10px system-ui;padding:7px 10px;border-radius:5px">Check</div>
+      </div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font:600 12px system-ui;color:#555;margin-bottom:7px">Featured events carousel</div>
+      <div style="display:flex;gap:8px;overflow:hidden">
+        <div style="min-width:120px;border:1px dashed #c8c8c8;border-radius:4px;padding:6px"><div style="height:50px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;width:70%;border-radius:3px;background:#dcdcdc"></div></div>
+        <div style="min-width:120px;border:1px dashed #c8c8c8;border-radius:4px;padding:6px"><div style="height:50px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;width:70%;border-radius:3px;background:#dcdcdc"></div></div>
+        <div style="min-width:120px;border:1px dashed #c8c8c8;border-radius:4px;padding:6px;opacity:.5"><div style="height:50px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px);margin-bottom:5px"></div><div style="height:6px;width:70%;border-radius:3px;background:#dcdcdc"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- ABOUT ---- -->
+<div style="position:absolute;left:1160px;top:190px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">About the gym</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:5px;padding:7px 9px;background:#f6f6f6;border-bottom:1.5px solid #2b2b2b">
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="flex:1;height:13px;border-radius:7px;background:#ececec;margin-left:6px"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span style="color:#ef5b2b;font-weight:600">About</span><span>Facilities</span><span>Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="padding:14px">
+      <div style="font:700 17px Caveat,cursive;color:#2b2b2b;margin-bottom:10px">About AGREDA PHASE III</div>
+      <div style="height:120px;border:1.5px dashed #bbb;border-radius:4px;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e8e8e8 7px,#e8e8e8 14px);font:10px ui-monospace,monospace;color:#999;margin-bottom:12px">gym / community photo</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
+        <div style="height:7px;border-radius:4px;background:#dcdcdc"></div><div style="height:7px;border-radius:4px;background:#dcdcdc"></div><div style="height:7px;width:90%;border-radius:4px;background:#dcdcdc"></div><div style="height:7px;width:70%;border-radius:4px;background:#dcdcdc"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:10px 8px;text-align:center"><div style="font:700 16px Caveat,cursive;color:#ef5b2b">4</div><div style="font:9px ui-monospace,monospace;color:#999">sports</div></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:10px 8px;text-align:center"><div style="font:700 16px Caveat,cursive;color:#ef5b2b">★</div><div style="font:9px ui-monospace,monospace;color:#999">since 20XX</div></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:10px 8px;text-align:center"><div style="font:700 16px Caveat,cursive;color:#ef5b2b">⬚</div><div style="font:9px ui-monospace,monospace;color:#999">full court</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- FACILITIES ---- -->
+<div style="position:absolute;left:1700px;top:190px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Facilities / what's available</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:5px;padding:7px 9px;background:#f6f6f6;border-bottom:1.5px solid #2b2b2b">
+      <div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div><div style="width:8px;height:8px;border-radius:50%;background:#e3e3e3;border:1px solid #c9c9c9"></div>
+      <div style="flex:1;height:13px;border-radius:7px;background:#ececec;margin-left:6px"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span style="color:#ef5b2b;font-weight:600">Facilities</span><span>Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="padding:14px">
+      <div style="font:700 17px Caveat,cursive;color:#2b2b2b;margin-bottom:3px">One court, four sports</div>
+      <div style="font:10px ui-monospace,monospace;color:#999;margin-bottom:12px">lines &amp; equipment adjusted per booking</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="border:1.5px solid #2b2b2b;border-radius:5px;padding:10px"><div style="width:30px;height:30px;border-radius:5px;background:#fae7df;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:6px">🏀</div><div style="font:600 12px system-ui;color:#333">Basketball</div><div style="font:9px ui-monospace,monospace;color:#aaa">full / half court</div></div>
+        <div style="border:1.5px solid #2b2b2b;border-radius:5px;padding:10px"><div style="width:30px;height:30px;border-radius:5px;background:#fae7df;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:6px">🏐</div><div style="font:600 12px system-ui;color:#333">Volleyball</div><div style="font:9px ui-monospace,monospace;color:#aaa">net provided</div></div>
+        <div style="border:1.5px solid #2b2b2b;border-radius:5px;padding:10px"><div style="width:30px;height:30px;border-radius:5px;background:#fae7df;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:6px">⚽</div><div style="font:600 12px system-ui;color:#333">Futsal</div><div style="font:9px ui-monospace,monospace;color:#aaa">indoor goals</div></div>
+        <div style="border:1.5px solid #2b2b2b;border-radius:5px;padding:10px"><div style="width:30px;height:30px;border-radius:5px;background:#fae7df;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:6px">🥒</div><div style="font:600 12px system-ui;color:#333">Pickleball</div><div style="font:9px ui-monospace,monospace;color:#aaa">lines added</div></div>
+      </div>
+      <div style="margin-top:12px;border-top:1px dashed #cfcfcf;padding-top:10px">
+        <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Amenities</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;font:10px system-ui;color:#777"><span>· Parking</span><span>· Restrooms</span><span>· Lighting</span><span>· Seating</span><span>· Water</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION: BOOKING FLOW ============ -->
+<div style="position:absolute;left:80px;top:910px;font:600 20px Caveat,cursive;color:#ef5b2b">② BOOKING FLOW</div>
+
+<!-- ---- BOOKING A: calendar + slots ---- -->
+<div style="position:absolute;left:80px;top:980px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Booking — Variant A (calendar + slot list)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span style="color:#ef5b2b;font-weight:600">Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px dashed #cfcfcf;font:10px system-ui;color:#999">
+      <span style="background:#ef5b2b;color:#fff;border-radius:10px;padding:2px 8px">1 Sport</span><span>›</span><span style="background:#ef5b2b;color:#fff;border-radius:10px;padding:2px 8px">2 Date</span><span>›</span><span style="border:1px solid #ccc;border-radius:10px;padding:2px 8px">3 Time</span><span>›</span><span style="border:1px solid #ccc;border-radius:10px;padding:2px 8px">4 Details</span>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        <span style="background:#ef5b2b;color:#fff;border:1.5px solid #ef5b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Basketball</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Volleyball</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Futsal</span>
+        <span style="border:1.5px solid #2b2b2b;border-radius:14px;padding:4px 11px;font:11px system-ui">Pickleball</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:12px">
+        <div style="border:1px solid #e2e2e2;border-radius:6px;padding:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;font:600 11px system-ui;color:#555;margin-bottom:6px"><span>‹</span><span>June 2026</span><span>›</span></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font:8px ui-monospace,monospace;color:#bbb;margin-bottom:3px;text-align:center"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+            <div style="aspect-ratio:1;border-radius:3px;background:#f1f1f1;opacity:.4"></div><div style="aspect-ratio:1;border-radius:3px;background:#f1f1f1;opacity:.4"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div>
+            <div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#ef5b2b"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div>
+            <div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div>
+            <div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div><div style="aspect-ratio:1;border-radius:3px;background:#eee"></div>
+          </div>
+        </div>
+        <div>
+          <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Time slots — Jun 11</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1.5px solid #2b2b2b;border-radius:5px;padding:5px 8px;font:10px system-ui"><span>8:00 AM</span><span style="color:#1f9d55">free</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1.5px solid #ef5b2b;background:#fdeee7;border-radius:5px;padding:5px 8px;font:10px system-ui"><span>9:00 AM</span><span style="color:#ef5b2b;font-weight:600">selected</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #e2e2e2;border-radius:5px;padding:5px 8px;font:10px system-ui;color:#bbb"><span>10:00 AM</span><span>pending</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #e2e2e2;background:#f4f4f4;border-radius:5px;padding:5px 8px;font:10px system-ui;color:#bbb"><span>11:00 AM</span><span>booked</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1.5px solid #2b2b2b;border-radius:5px;padding:5px 8px;font:10px system-ui"><span>1:00 PM</span><span style="color:#1f9d55">free</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:12px;font:9px system-ui;color:#999">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border:1.5px solid #2b2b2b;border-radius:2px"></span>free</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#fdeee7;border:1px solid #ef5b2b;border-radius:2px"></span>pending</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#f4f4f4;border:1px solid #ccc;border-radius:2px"></span>booked</span>
+      </div>
+      <div style="background:#ef5b2b;color:#fff;text-align:center;font:600 12px system-ui;padding:9px;border-radius:5px;margin-top:12px">Continue → enter details</div>
+      <div style="font:9px ui-monospace,monospace;color:#aaa;text-align:center;margin-top:6px">Owner confirms availability before it's final.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- BOOKING B: weekly grid ---- -->
+<div style="position:absolute;left:620px;top:980px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Booking — Variant B (weekly availability grid)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span style="color:#ef5b2b;font-weight:600">Book</span><span>Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="display:flex;gap:6px;border-bottom:1px solid #eee;margin-bottom:10px">
+        <span style="border-bottom:2px solid #ef5b2b;color:#ef5b2b;font:600 11px system-ui;padding:0 4px 6px">Basketball</span>
+        <span style="color:#999;font:11px system-ui;padding:0 4px 6px">Volleyball</span>
+        <span style="color:#999;font:11px system-ui;padding:0 4px 6px">Futsal</span>
+        <span style="color:#999;font:11px system-ui;padding:0 4px 6px">Pickleball</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font:600 11px system-ui;color:#555;margin-bottom:8px"><span>‹ prev</span><span>Jun 8 – 14</span><span>next ›</span></div>
+      <div style="display:grid;grid-template-columns:34px repeat(6,1fr);gap:3px">
+        <div></div>
+        <div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">Mo</div><div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">Tu</div><div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">We</div><div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">Th</div><div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">Fr</div><div style="font:8px ui-monospace,monospace;color:#bbb;text-align:center">Sa</div>
+        <div style="font:8px ui-monospace,monospace;color:#999;text-align:right;padding-right:3px">8a</div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div>
+        <div style="font:8px ui-monospace,monospace;color:#999;text-align:right;padding-right:3px">10a</div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#ef5b2b"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div>
+        <div style="font:8px ui-monospace,monospace;color:#999;text-align:right;padding-right:3px">1p</div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div>
+        <div style="font:8px ui-monospace,monospace;color:#999;text-align:right;padding-right:3px">4p</div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div>
+        <div style="font:8px ui-monospace,monospace;color:#999;text-align:right;padding-right:3px">6p</div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div><div style="height:16px;border-radius:3px;background:#f4f4f4"></div><div style="height:16px;border-radius:3px;background:#dff3e6"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;font:9px system-ui;color:#999"><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#dff3e6;border-radius:2px"></span>free</span><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#f4f4f4;border-radius:2px"></span>taken</span><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#ef5b2b;border-radius:2px"></span>picked</span></div>
+      <div style="border-top:1px dashed #cfcfcf;margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:6px">
+        <div style="font:600 11px system-ui;color:#555">Your details</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Full name</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Phone / Facebook</div>
+        <div style="background:#ef5b2b;color:#fff;text-align:center;font:600 12px system-ui;padding:9px;border-radius:5px">Submit request</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- CONFIRMATION ---- -->
+<div style="position:absolute;left:1160px;top:980px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Request submitted</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>Book</span><span>Contact</span></div>
+    </div>
+    <div style="padding:24px 18px;text-align:center">
+      <div style="width:52px;height:52px;border-radius:50%;background:#dff3e6;border:1.5px solid #1f9d55;color:#1f9d55;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">✓</div>
+      <div style="font:700 19px Caveat,cursive;color:#2b2b2b">Request sent!</div>
+      <div style="font:11px system-ui;color:#777;margin:4px 0 16px">We'll confirm availability shortly.</div>
+      <div style="border:1px solid #e2e2e2;border-radius:6px;padding:12px;text-align:left;font:11px system-ui;color:#555;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#999">Sport</span><span>Basketball</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#999">Date</span><span>Jun 11, 2026</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#999">Time</span><span>9:00–10:00 AM</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#999">Name</span><span>Juan D.</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px dashed #ddd;padding-top:6px"><span style="color:#999">Status</span><span style="color:#ef5b2b;font-weight:600">Awaiting owner</span></div>
+      </div>
+      <div style="background:#fef4a8;border-radius:5px;padding:9px;font:10px system-ui;color:#5a4b12;margin-top:12px">💬 Owner notified via Facebook + admin dashboard. 💵 Payment is made in person at the court.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- PRICING ---- -->
+<div style="position:absolute;left:1700px;top:980px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Pricing</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span>Book</span><span style="color:#ef5b2b;font-weight:600">Pricing</span><span>FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="padding:14px">
+      <div style="font:700 17px Caveat,cursive;color:#2b2b2b;margin-bottom:12px">Court rates (per hour)</div>
+      <div style="border:1px solid #e2e2e2;border-radius:6px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;background:#f6f6f6;font:600 10px system-ui;color:#777;padding:8px 10px"><span>Sport</span><span>Off-peak</span><span>Peak</span></div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;font:11px system-ui;color:#444;padding:8px 10px;border-top:1px solid #eee"><span>Basketball</span><span>₱___</span><span>₱___</span></div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;font:11px system-ui;color:#444;padding:8px 10px;border-top:1px solid #eee"><span>Volleyball</span><span>₱___</span><span>₱___</span></div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;font:11px system-ui;color:#444;padding:8px 10px;border-top:1px solid #eee"><span>Futsal</span><span>₱___</span><span>₱___</span></div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;font:11px system-ui;color:#444;padding:8px 10px;border-top:1px solid #eee"><span>Pickleball</span><span>₱___</span><span>₱___</span></div>
+      </div>
+      <div style="font:10px system-ui;color:#999;margin-top:10px">Peak = evenings &amp; weekends. Fill in your real rates.</div>
+      <div style="background:#fef4a8;border-radius:5px;padding:9px;font:10px system-ui;color:#5a4b12;margin-top:10px">💵 Payment in person — no online payment.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION: MORE PAGES ============ -->
+<div style="position:absolute;left:80px;top:1750px;font:600 20px Caveat,cursive;color:#ef5b2b">③ MORE PAGES &amp; MOBILE</div>
+
+<!-- ---- RULES / FAQ ---- -->
+<div style="position:absolute;left:80px;top:1820px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Rules / FAQ (accordion)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span>Book</span><span>Pricing</span><span style="color:#ef5b2b;font-weight:600">FAQ</span><span>Contact</span></div>
+    </div>
+    <div style="padding:14px">
+      <div style="font:700 17px Caveat,cursive;color:#2b2b2b;margin-bottom:12px">Rules &amp; FAQ</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center"><span style="font:11px system-ui;color:#444">How do I confirm my booking?</span><span style="color:#ef5b2b;font-size:14px">–</span></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:0 11px 10px"><div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0"><span style="font:11px system-ui;color:#444">How do I confirm my booking?</span></div><div style="display:flex;flex-direction:column;gap:4px"><div style="height:6px;border-radius:3px;background:#e4e4e4"></div><div style="height:6px;width:80%;border-radius:3px;background:#e4e4e4"></div></div></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center"><span style="font:11px system-ui;color:#444">Can I change sports on the same booking?</span><span style="color:#999;font-size:14px">+</span></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center"><span style="font:11px system-ui;color:#444">What's the cancellation policy?</span><span style="color:#999;font-size:14px">+</span></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center"><span style="font:11px system-ui;color:#444">House rules &amp; equipment</span><span style="color:#999;font-size:14px">+</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- CONTACT + MAP ---- -->
+<div style="position:absolute;left:620px;top:1820px;width:460px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Contact + location map</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px dashed #cfcfcf">
+      <div style="font:700 15px Caveat,cursive;color:#ef5b2b">AGREDA III</div>
+      <div style="display:flex;gap:8px;font:10px system-ui;color:#888"><span>Home</span><span>About</span><span>Facilities</span><span>Book</span><span>Pricing</span><span>FAQ</span><span style="color:#ef5b2b;font-weight:600">Contact</span></div>
+    </div>
+    <div style="height:130px;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#eef2ee,#eef2ee 8px,#e4ebe4 8px,#e4ebe4 16px);border-bottom:1px dashed #cfcfcf;position:relative">
+      <div style="font:10px ui-monospace,monospace;color:#8a9a8a">map embed (Google Maps)</div>
+      <div style="position:absolute;left:50%;top:46%;transform:translate(-50%,-100%);color:#ef5b2b;font-size:22px">📍</div>
+    </div>
+    <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:7px;font:11px system-ui;color:#555">
+        <div><span style="color:#999">Address</span><br>AGREDA Phase III, ____</div>
+        <div><span style="color:#999">Phone</span><br>0900 000 0000</div>
+        <div><span style="color:#999">Facebook</span><br>fb.com/agreda3court</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:600 11px system-ui;color:#555">Send a message</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999">Name</div>
+        <div style="border:1.5px solid #bbb;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#999;height:34px">Message…</div>
+        <div style="background:#ef5b2b;color:#fff;text-align:center;font:600 11px system-ui;padding:7px;border-radius:5px">Send</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- MOBILE HOME ---- -->
+<div style="position:absolute;left:1160px;top:1820px;width:264px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Mobile — Home</div>
+  <div style="background:#fff;border:2px solid #2b2b2b;border-radius:22px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="height:22px;display:flex;align-items:center;justify-content:center"><div style="width:70px;height:6px;border-radius:4px;background:#ddd"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px dashed #cfcfcf"><span style="font-size:14px;color:#555">☰</span><div style="font:700 14px Caveat,cursive;color:#ef5b2b">AGREDA III</div><span style="font-size:13px">·</span></div>
+    <div style="height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#e8e8e8 7px,#e8e8e8 14px);position:relative">
+      <div style="font:9px ui-monospace,monospace;color:#999">carousel</div>
+      <div style="font:700 14px Caveat,cursive;color:#3a3a3a;margin-top:4px;text-align:center;padding:0 16px">Book the court</div>
+      <div style="position:absolute;bottom:8px;display:flex;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#ef5b2b"></span><span style="width:6px;height:6px;border-radius:50%;background:#cfcfcf"></span><span style="width:6px;height:6px;border-radius:50%;background:#cfcfcf"></span></div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="background:#ef5b2b;color:#fff;text-align:center;font:600 12px system-ui;padding:9px;border-radius:6px;margin-bottom:12px">Book Now →</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px"><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Basketball</span><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Volleyball</span><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Futsal</span><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Pickleball</span></div>
+      <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Featured events</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="border:1px dashed #c8c8c8;border-radius:5px;height:46px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px)"></div>
+        <div style="border:1px dashed #c8c8c8;border-radius:5px;height:46px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- MOBILE BOOKING ---- -->
+<div style="position:absolute;left:1500px;top:1820px;width:264px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Mobile — Booking</div>
+  <div style="background:#fff;border:2px solid #2b2b2b;border-radius:22px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+    <div style="height:22px;display:flex;align-items:center;justify-content:center"><div style="width:70px;height:6px;border-radius:4px;background:#ddd"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px dashed #cfcfcf"><span style="font-size:14px;color:#555">‹</span><div style="font:600 12px system-ui;color:#444">Book a slot</div><span style="font-size:13px;color:#fff">·</span></div>
+    <div style="padding:12px 14px">
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px"><span style="background:#ef5b2b;color:#fff;border:1.5px solid #ef5b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Basketball</span><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Volleyball</span><span style="border:1.5px solid #2b2b2b;border-radius:13px;padding:3px 9px;font:10px system-ui">Futsal</span></div>
+      <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Pick a date</div>
+      <div style="display:flex;gap:6px;overflow:hidden;margin-bottom:12px">
+        <div style="min-width:42px;border:1px solid #e2e2e2;border-radius:6px;text-align:center;padding:6px 0"><div style="font:8px ui-monospace,monospace;color:#aaa">WED</div><div style="font:600 13px system-ui;color:#444">10</div></div>
+        <div style="min-width:42px;border:1.5px solid #ef5b2b;background:#fdeee7;border-radius:6px;text-align:center;padding:6px 0"><div style="font:8px ui-monospace,monospace;color:#ef5b2b">THU</div><div style="font:600 13px system-ui;color:#ef5b2b">11</div></div>
+        <div style="min-width:42px;border:1px solid #e2e2e2;border-radius:6px;text-align:center;padding:6px 0"><div style="font:8px ui-monospace,monospace;color:#aaa">FRI</div><div style="font:600 13px system-ui;color:#444">12</div></div>
+        <div style="min-width:42px;border:1px solid #e2e2e2;border-radius:6px;text-align:center;padding:6px 0"><div style="font:8px ui-monospace,monospace;color:#aaa">SAT</div><div style="font:600 13px system-ui;color:#444">13</div></div>
+      </div>
+      <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Time slots</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between;border:1.5px solid #2b2b2b;border-radius:5px;padding:6px 8px;font:10px system-ui"><span>8:00 AM</span><span style="color:#1f9d55">free</span></div>
+        <div style="display:flex;justify-content:space-between;border:1.5px solid #ef5b2b;background:#fdeee7;border-radius:5px;padding:6px 8px;font:10px system-ui"><span>9:00 AM</span><span style="color:#ef5b2b;font-weight:600">selected</span></div>
+        <div style="display:flex;justify-content:space-between;border:1px solid #e2e2e2;background:#f4f4f4;border-radius:5px;padding:6px 8px;font:10px system-ui;color:#bbb"><span>10:00 AM</span><span>booked</span></div>
+      </div>
+    </div>
+    <div style="border-top:1px dashed #cfcfcf;padding:10px 14px;background:#fafafa"><div style="background:#ef5b2b;color:#fff;text-align:center;font:600 12px system-ui;padding:9px;border-radius:6px">Request booking</div></div>
+  </div>
+</div>
+
+<!-- ============ SECTION: ADMIN / CMS ============ -->
+<div style="position:absolute;left:80px;top:2570px;font:600 20px Caveat,cursive;color:#ef5b2b">④ ADMIN / CMS (owner side)</div>
+
+<!-- ---- ADMIN DASHBOARD ---- -->
+<div style="position:absolute;left:80px;top:2640px;width:540px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Admin — Dashboard</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden;display:flex">
+    <div style="width:120px;border-right:1px dashed #cfcfcf;padding:12px 8px;background:#fafafa">
+      <div style="font:700 13px Caveat,cursive;color:#ef5b2b;margin-bottom:12px">AGREDA Admin</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font:10px system-ui">
+        <span style="background:#fdeee7;color:#ef5b2b;font-weight:600;border-radius:4px;padding:5px 7px">Dashboard</span>
+        <span style="color:#777;padding:5px 7px">Bookings</span>
+        <span style="color:#777;padding:5px 7px">Calendar</span>
+        <span style="color:#777;padding:5px 7px">Content / CMS</span>
+        <span style="color:#777;padding:5px 7px">Pricing</span>
+        <span style="color:#777;padding:5px 7px">Settings</span>
+      </div>
+    </div>
+    <div style="flex:1;padding:12px 14px">
+      <div style="font:600 13px system-ui;color:#333;margin-bottom:10px">Overview</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px"><div style="font:700 18px Caveat,cursive;color:#ef5b2b">5</div><div style="font:8px ui-monospace,monospace;color:#999">pending</div></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px"><div style="font:700 18px Caveat,cursive;color:#333">8</div><div style="font:8px ui-monospace,monospace;color:#999">today</div></div>
+        <div style="border:1px solid #e2e2e2;border-radius:5px;padding:9px"><div style="font:700 18px Caveat,cursive;color:#333">31</div><div style="font:8px ui-monospace,monospace;color:#999">this week</div></div>
+      </div>
+      <div style="font:600 11px system-ui;color:#555;margin-bottom:6px">Latest requests</div>
+      <div style="border:1px solid #e2e2e2;border-radius:5px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1fr 1fr 0.8fr auto;background:#f6f6f6;font:600 9px system-ui;color:#888;padding:6px 9px"><span>Name</span><span>Slot</span><span>Sport</span><span>·</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 0.8fr auto;font:10px system-ui;color:#444;padding:6px 9px;border-top:1px solid #eee;align-items:center"><span>Juan D.</span><span>Jun11 9AM</span><span>Bball</span><span style="background:#ef5b2b;color:#fff;border-radius:3px;padding:2px 6px;font-size:8px">confirm</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 0.8fr auto;font:10px system-ui;color:#444;padding:6px 9px;border-top:1px solid #eee;align-items:center"><span>Mia R.</span><span>Jun11 4PM</span><span>Volley</span><span style="background:#ef5b2b;color:#fff;border-radius:3px;padding:2px 6px;font-size:8px">confirm</span></div>
+      </div>
+      <div style="background:#fef4a8;border-radius:5px;padding:8px;font:9px system-ui;color:#5a4b12;margin-top:10px">🔔 New request auto-fires a Facebook message to the owner.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- ADMIN BOOKINGS TABLE ---- -->
+<div style="position:absolute;left:700px;top:2640px;width:620px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Admin — Bookings (confirm / decline)</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden;display:flex">
+    <div style="width:46px;border-right:1px dashed #cfcfcf;padding:12px 6px;background:#fafafa;display:flex;flex-direction:column;gap:10px;align-items:center;font-size:13px;color:#999"><span>▦</span><span style="color:#ef5b2b">▤</span><span>▥</span><span>✎</span><span>₱</span><span>⚙</span></div>
+    <div style="flex:1;padding:12px 14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font:600 13px system-ui;color:#333">Booking requests</div><div style="display:flex;gap:6px"><span style="border:1px solid #ccc;border-radius:5px;padding:4px 9px;font:9px system-ui;color:#777">Status ▾</span><span style="border:1px solid #ccc;border-radius:5px;padding:4px 9px;font:9px system-ui;color:#777">Sport ▾</span><span style="border:1px solid #ccc;border-radius:5px;padding:4px 9px;font:9px system-ui;color:#777">Date ▾</span></div></div>
+      <div style="border:1px solid #e2e2e2;border-radius:5px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;background:#f6f6f6;font:600 9px system-ui;color:#888;padding:7px 10px"><span>Date</span><span>Time</span><span>Sport</span><span>Name</span><span>Status</span><span>Action</span></div>
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;font:10px system-ui;color:#444;padding:7px 10px;border-top:1px solid #eee;align-items:center"><span>Jun 11</span><span>9 AM</span><span>Bball</span><span>Juan D.</span><span style="color:#d99a00">pending</span><span style="display:flex;gap:4px"><span style="background:#ef5b2b;color:#fff;border-radius:3px;padding:2px 6px;font-size:8px">✓</span><span style="border:1px solid #ccc;border-radius:3px;padding:2px 6px;font-size:8px;color:#999">✕</span></span></div>
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;font:10px system-ui;color:#444;padding:7px 10px;border-top:1px solid #eee;align-items:center"><span>Jun 11</span><span>4 PM</span><span>Volley</span><span>Mia R.</span><span style="color:#d99a00">pending</span><span style="display:flex;gap:4px"><span style="background:#ef5b2b;color:#fff;border-radius:3px;padding:2px 6px;font-size:8px">✓</span><span style="border:1px solid #ccc;border-radius:3px;padding:2px 6px;font-size:8px;color:#999">✕</span></span></div>
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;font:10px system-ui;color:#444;padding:7px 10px;border-top:1px solid #eee;align-items:center"><span>Jun 12</span><span>10 AM</span><span>Futsal</span><span>Leo S.</span><span style="color:#1f9d55">confirmed</span><span style="color:#bbb;font-size:9px">— done</span></div>
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;font:10px system-ui;color:#444;padding:7px 10px;border-top:1px solid #eee;align-items:center"><span>Jun 12</span><span>6 PM</span><span>Pickle</span><span>Ana V.</span><span style="color:#c0392b">declined</span><span style="color:#bbb;font-size:9px">—</span></div>
+        <div style="display:grid;grid-template-columns:0.8fr 0.7fr 0.8fr 1fr 0.9fr 1.1fr;font:10px system-ui;color:#444;padding:7px 10px;border-top:1px solid #eee;align-items:center"><span>Jun 13</span><span>1 PM</span><span>Bball</span><span>Kim T.</span><span style="color:#d99a00">pending</span><span style="display:flex;gap:4px"><span style="background:#ef5b2b;color:#fff;border-radius:3px;padding:2px 6px;font-size:8px">✓</span><span style="border:1px solid #ccc;border-radius:3px;padding:2px 6px;font-size:8px;color:#999">✕</span></span></div>
+      </div>
+      <div style="font:9px ui-monospace,monospace;color:#aaa;margin-top:8px">Clicking ✓ confirms the slot &amp; notifies the requester. ✕ declines + frees the slot.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- ADMIN CMS CONTENT ---- -->
+<div style="position:absolute;left:1400px;top:2640px;width:540px">
+  <div data-drags-parent="1" style="position:absolute;top:-24px;left:2px;font:600 15px Caveat,cursive;color:#444">Admin — Content / CMS</div>
+  <div style="background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden;display:flex">
+    <div style="width:46px;border-right:1px dashed #cfcfcf;padding:12px 6px;background:#fafafa;display:flex;flex-direction:column;gap:10px;align-items:center;font-size:13px;color:#999"><span>▦</span><span>▤</span><span>▥</span><span style="color:#ef5b2b">✎</span><span>₱</span><span>⚙</span></div>
+    <div style="flex:1;padding:12px 14px">
+      <div style="font:600 13px system-ui;color:#333;margin-bottom:8px">Manage content</div>
+      <div style="display:flex;gap:6px;border-bottom:1px solid #eee;margin-bottom:10px">
+        <span style="border-bottom:2px solid #ef5b2b;color:#ef5b2b;font:600 10px system-ui;padding:0 4px 6px">Carousel</span>
+        <span style="color:#999;font:10px system-ui;padding:0 4px 6px">Events</span>
+        <span style="color:#999;font:10px system-ui;padding:0 4px 6px">About</span>
+        <span style="color:#999;font:10px system-ui;padding:0 4px 6px">Facilities</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:9px;border:1px solid #e2e2e2;border-radius:5px;padding:7px"><span style="color:#bbb;cursor:grab">⠿</span><div style="width:50px;height:34px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px)"></div><div style="flex:1"><div style="font:10px system-ui;color:#444">Slide 1 — Grand opening</div><div style="font:8px ui-monospace,monospace;color:#aaa">visible</div></div><span style="color:#999;font-size:11px">✎</span><span style="color:#ccc;font-size:11px">🗑</span></div>
+        <div style="display:flex;align-items:center;gap:9px;border:1px solid #e2e2e2;border-radius:5px;padding:7px"><span style="color:#bbb;cursor:grab">⠿</span><div style="width:50px;height:34px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px)"></div><div style="flex:1"><div style="font:10px system-ui;color:#444">Slide 2 — Pickleball night</div><div style="font:8px ui-monospace,monospace;color:#aaa">visible</div></div><span style="color:#999;font-size:11px">✎</span><span style="color:#ccc;font-size:11px">🗑</span></div>
+        <div style="display:flex;align-items:center;gap:9px;border:1px solid #e2e2e2;border-radius:5px;padding:7px;opacity:.55"><span style="color:#bbb;cursor:grab">⠿</span><div style="width:50px;height:34px;border-radius:3px;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 6px,#e8e8e8 6px,#e8e8e8 12px)"></div><div style="flex:1"><div style="font:10px system-ui;color:#444">Slide 3 — Court photo</div><div style="font:8px ui-monospace,monospace;color:#aaa">hidden</div></div><span style="color:#999;font-size:11px">✎</span><span style="color:#ccc;font-size:11px">🗑</span></div>
+      </div>
+      <div style="border:1.5px dashed #ccc;border-radius:5px;text-align:center;padding:10px;font:10px system-ui;color:#999;margin-top:9px">+ Add slide / drop image</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ POST-IT NOTES ============ -->
+<div style="position:absolute;left:2210px;top:230px;width:230px;background:#fef4a8;padding:12px;font:13px/1.45 system-ui;color:#5a4b12;box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(1.5deg)">
+  <b>Carousel</b> = featured events + gym/court photos. Owner uploads &amp; reorders them in the CMS.
+</div>
+<div style="position:absolute;left:2210px;top:1010px;width:230px;background:#fef4a8;padding:12px;font:13px/1.45 system-ui;color:#5a4b12;box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(-1.5deg)">
+  <b>No live sync needed yet.</b> Slots show free / pending / booked from the DB; owner confirms each request manually.
+</div>
+<div style="position:absolute;left:2000px;top:2660px;width:230px;background:#fef4a8;padding:12px;font:13px/1.45 system-ui;color:#5a4b12;box-shadow:0 1px 3px rgba(0,0,0,.12);transform:rotate(1.2deg)">
+  <b>Notifications:</b> new request → admin dashboard badge + auto Facebook message to owner. Confirm/decline replies back to the visitor.
+</div>
+</x-dc>
+</body>
+</html>

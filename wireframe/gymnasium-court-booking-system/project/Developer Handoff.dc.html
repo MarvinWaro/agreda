@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#f4f4f5; font-family:Inter,system-ui,sans-serif; color:#27272a; }
+  .doc { box-sizing:border-box; max-width:8.5in; margin:0 auto; background:#fff; padding:64px clamp(24px,5vw,0.85in) 96px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  .doc-frame { width:100%; border-collapse:collapse; }
+  .doc-frame td { padding:0; }
+  .hdr-space, .ftr-space { display:none; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    html, body { margin:0; padding:0; background:#fff; }
+    .doc { max-width:none !important; margin:0 !important; padding:0 0.75in !important; box-shadow:none !important; }
+    .hdr-space, .ftr-space { display:table-cell; height:0.75in; }
+    h1,h2,h3,h4 { break-after:avoid; }
+    figure, pre, blockquote, table, tr, .keep { break-inside:avoid; }
+    p, li { orphans:3; widows:3; }
+  }
+</style>
+</helmet>
+
+<main class="doc">
+  <table class="doc-frame" role="presentation">
+    <thead><tr><td class="hdr-space"></td></tr></thead>
+    <tbody><tr><td>
+
+      <!-- ===== TITLE ===== -->
+      <div style="border-left:4px solid #ef5b2b;padding-left:16px;margin-bottom:8px">
+        <div style="font:600 12px JetBrains Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:#ef5b2b">Developer Handoff Spec</div>
+        <h1 style="font:700 30px Inter;margin:6px 0 4px;color:#18181b;line-height:1.15">AGREDA PHASE III — Court Booking System</h1>
+        <div style="font:15px Inter;color:#71717a">Laravel 13 · Inertia + React (TS) · shadcn/ui · MySQL</div>
+      </div>
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:18px 0 0">
+        This document is the build spec for the AGREDA III website + booking system. It is written to be read by a developer (or Claude Code) working directly inside the existing Laravel 13 React starter-kit repo. It covers the database schema, Eloquent models &amp; relationships, routes, the page/component breakdown, the booking-availability logic, and the queued owner-notification job. Pair it with the <strong>Wireframes</strong> and <strong>ERD</strong> canvases.
+      </p>
+
+      <!-- ===== 0. CONTEXT ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">0 · Context &amp; conventions</h2>
+      <ul style="font:14px/1.7 Inter;color:#3f3f46;margin:0;padding-left:20px">
+        <li><strong>One physical court, four sports.</strong> Basketball, Volleyball, Futsal, Pickleball — lines &amp; equipment are adjusted per booking. So a slot is busy for <em>all</em> sports when booked for any one.</li>
+        <li><strong>Booking = request, not instant.</strong> Visitor picks sport → date → time slot → submits. Status starts <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">pending</code>; the owner confirms or declines from the admin panel.</li>
+        <li><strong>Payment is in person.</strong> No online payment gateway. <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">total_price</code> is computed/stored for reference only.</li>
+        <li><strong>Notifications.</strong> A new request fires (a) an in-app admin alert and (b) an automatic Facebook message to the owner — via a <em>queued job</em> so the visitor's submit isn't blocked.</li>
+        <li><strong>Guests don't need accounts.</strong> Bookings capture <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">guest_name</code>/<code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">guest_phone</code>; <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">user_id</code> is nullable and only set for the admin/owner login.</li>
+      </ul>
+
+      <!-- ===== 1. SCHEMA ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">1 · Database schema (migrations)</h2>
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:0 0 14px">Generate one migration per table. Types below are Laravel <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">Schema</code> builder methods. Run in this order (FK dependencies).</p>
+
+      <!-- table -->
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#18181b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">sports</div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">name</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">slug</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string, unique</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">icon</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string, nullable</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">rate_offpeak</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">decimal(8,2)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">rate_peak</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">decimal(8,2)</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">is_active</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">boolean, default true</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#18181b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">courts</div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">name</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">description</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">text, nullable</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">location</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string, nullable</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">is_active</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">boolean, default true</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Single row to start. Modeled as a table so a second venue can be added later without a rewrite.</div>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#6b6b6b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">court_sport &nbsp;<span style="opacity:.7;font-weight:400">pivot</span></div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">court_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → courts, cascade</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">sport_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → sports, cascade</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Add <code style="font:11px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">$table->unique(['court_id','sport_id'])</code>. Which sports a court supports.</div>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#ef5b2b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">bookings &nbsp;<span style="opacity:.85;font-weight:400">core table</span></div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">user_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId, nullable → users</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">court_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → courts</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">sport_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → sports</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">guest_name</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">guest_phone</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">booking_date</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">date</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">start_time</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">time</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">end_time</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">time</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">status</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">enum: pending·confirmed·declined·cancelled·completed</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">total_price</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">decimal(8,2), nullable</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">notes</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">text, nullable</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Index <code style="font:11px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">['court_id','booking_date','status']</code> for fast availability lookups.</div>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#18181b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">operating_hours</div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">court_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → courts</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">day_of_week</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">tinyint (0=Sun … 6=Sat)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">open_time</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">time</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">close_time</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">time</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Drives which time slots are generated per weekday.</div>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#18181b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">court_closures</div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">court_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → courts</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">date</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">date</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">reason</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">string, nullable</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Holidays / maintenance — blocks the whole day.</div>
+      </div>
+
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <div style="background:#18181b;color:#fff;font:600 13px JetBrains Mono,monospace;padding:8px 13px">notifications</div>
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <tbody>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;width:38%;font:500 12px JetBrains Mono,monospace;color:#ef5b2b">id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">id() — PK</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">booking_id</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">foreignId → bookings, cascade</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">channel</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">enum: facebook·admin·email</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">status</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">enum: queued·sent·failed</td></tr>
+            <tr><td style="padding:6px 13px;font:500 12px JetBrains Mono,monospace">sent_at</td><td style="padding:6px 13px;color:#71717a;font:12px JetBrains Mono,monospace">timestamp, nullable</td></tr>
+          </tbody>
+        </table>
+        <div style="font:12px Inter;color:#a1a1aa;padding:7px 13px;border-top:1px dashed #e4e4e7">Custom table — log of outbound messages. (Distinct from Laravel's built-in <code style="font:11px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">notifications</code> system; name it <code style="font:11px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">booking_notifications</code> if you'd rather avoid the clash.)</div>
+      </div>
+
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:16px 0 8px"><strong>CMS tables</strong> — admin-managed content, no booking FKs:</p>
+      <div class="keep" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px">
+        <div style="border:1px solid #e4e4e7;border-radius:8px;padding:10px 13px"><div style="font:600 12px JetBrains Mono,monospace;color:#18181b;margin-bottom:5px">carousel_slides</div><div style="font:11px/1.6 JetBrains Mono,monospace;color:#71717a">id · title · image_path · caption · link_url · sort_order · is_visible</div></div>
+        <div style="border:1px solid #e4e4e7;border-radius:8px;padding:10px 13px"><div style="font:600 12px JetBrains Mono,monospace;color:#18181b;margin-bottom:5px">events</div><div style="font:11px/1.6 JetBrains Mono,monospace;color:#71717a">id · title · description · image_path · event_date · is_featured</div></div>
+        <div style="border:1px solid #e4e4e7;border-radius:8px;padding:10px 13px"><div style="font:600 12px JetBrains Mono,monospace;color:#18181b;margin-bottom:5px">faqs</div><div style="font:11px/1.6 JetBrains Mono,monospace;color:#71717a">id · category · question · answer · sort_order</div></div>
+        <div style="border:1px solid #e4e4e7;border-radius:8px;padding:10px 13px"><div style="font:600 12px JetBrains Mono,monospace;color:#18181b;margin-bottom:5px">pages</div><div style="font:11px/1.6 JetBrains Mono,monospace;color:#71717a">id · slug · title · body · updated_at</div></div>
+        <div style="border:1px solid #e4e4e7;border-radius:8px;padding:10px 13px"><div style="font:600 12px JetBrains Mono,monospace;color:#18181b;margin-bottom:5px">settings</div><div style="font:11px/1.6 JetBrains Mono,monospace;color:#71717a">id · key · value · group</div></div>
+      </div>
+
+      <!-- ===== 2. MODELS ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">2 · Eloquent models &amp; relationships</h2>
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <thead><tr style="background:#fafafa"><td style="padding:8px 13px;font:600 12px Inter;color:#52525b;border-bottom:1px solid #e4e4e7">Model</td><td style="padding:8px 13px;font:600 12px Inter;color:#52525b;border-bottom:1px solid #e4e4e7">Relationships</td></tr></thead>
+          <tbody style="font:12px JetBrains Mono,monospace;color:#3f3f46">
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Sport</td><td style="padding:7px 13px;color:#71717a">hasMany(Booking) · belongsToMany(Court)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Court</td><td style="padding:7px 13px;color:#71717a">hasMany(Booking) · belongsToMany(Sport) · hasMany(OperatingHour) · hasMany(CourtClosure)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Booking</td><td style="padding:7px 13px;color:#71717a">belongsTo(Court) · belongsTo(Sport) · belongsTo(User) · hasMany(Notification)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">OperatingHour</td><td style="padding:7px 13px;color:#71717a">belongsTo(Court)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">CourtClosure</td><td style="padding:7px 13px;color:#71717a">belongsTo(Court)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Notification</td><td style="padding:7px 13px;color:#71717a">belongsTo(Booking)</td></tr>
+            <tr><td style="padding:7px 13px;font-weight:600">User</td><td style="padding:7px 13px;color:#71717a">hasMany(Booking) — add <code style="background:#f4f4f5;padding:1px 4px;border-radius:3px">role</code> (admin·owner·staff)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:0 0 4px">Casts to set: <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">booking_date → date</code>, <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">start_time/end_time → 'H:i'</code>, the enums to PHP <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">BookingStatus</code>/<code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">NotificationChannel</code> backed enums. Laravel 13's <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Table]</code> / <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Fillable]</code> attributes are optional — use them or classic properties, just stay consistent.</p>
+
+      <!-- ===== 3. ROUTES ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">3 · Routes</h2>
+      <p style="font:13px/1.6 Inter;color:#52525b;margin:0 0 8px"><strong>Public</strong> (Inertia pages, <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">routes/web.php</code>)</p>
+      <pre class="keep" style="background:#18181b;color:#e4e4e7;font:12px/1.7 JetBrains Mono,monospace;padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0 0 14px">GET   /                       HomeController@index        → Home
+GET   /about                  PageController@show('about')→ About
+GET   /facilities             FacilityController@index    → Facilities
+GET   /pricing                PricingController@index     → Pricing
+GET   /faqs                   FaqController@index         → Faqs
+GET   /contact                ContactController@show      → Contact
+GET   /book                   BookingController@create    → Booking
+GET   /api/availability       BookingController@slots     (sport_id, date) → JSON
+POST  /book                   BookingController@store     → request submitted
+GET   /book/{booking}/done    BookingController@confirm   → Confirmation</pre>
+      <p style="font:13px/1.6 Inter;color:#52525b;margin:0 0 8px"><strong>Admin</strong> (auth + role middleware, prefix <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">/admin</code>)</p>
+      <pre class="keep" style="background:#18181b;color:#e4e4e7;font:12px/1.7 JetBrains Mono,monospace;padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0 0 8px">GET    /admin                       Admin\DashboardController
+GET    /admin/bookings               Admin\BookingController@index
+PATCH  /admin/bookings/{b}/confirm   @confirm   → notify requester
+PATCH  /admin/bookings/{b}/decline   @decline   → free the slot
+GET    /admin/calendar               Admin\CalendarController
+resource  /admin/sports  /admin/slides  /admin/events  /admin/faqs  /admin/pages
+GET    /admin/settings               Admin\SettingController@edit
+PUT    /admin/settings               Admin\SettingController@update</pre>
+      <p style="font:13px/1.6 Inter;color:#71717a;margin:6px 0 0">Laravel 13 lets you attach <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Middleware]</code> / <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Authorize]</code> directly on admin controllers instead of a route group, if you prefer.</p>
+
+      <!-- ===== 4. AVAILABILITY LOGIC ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">4 · Availability logic (the important bit)</h2>
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:0 0 10px">Put this in an <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">AvailabilityService</code>. <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">GET /api/availability?date=&amp;sport_id=</code> returns each slot's state for the booking grid.</p>
+      <ol style="font:14px/1.7 Inter;color:#3f3f46;margin:0;padding-left:20px">
+        <li>Look up <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">operating_hours</code> for that weekday → generate hourly slots (open→close).</li>
+        <li>If a <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">court_closures</code> row exists for the date → whole day unavailable.</li>
+        <li>Load <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">bookings</code> for that court + date where status ∈ {pending, confirmed}. Mark overlapping slots <strong>booked</strong> (confirmed) or <strong>pending</strong>. <em>Sport-agnostic</em> — one court, so any sport's booking blocks the slot.</li>
+        <li>Past slots (today, before now) → disabled.</li>
+        <li>Everything else → <strong>free</strong>.</li>
+      </ol>
+      <div class="keep" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 15px;margin:14px 0 0">
+        <div style="font:600 13px Inter;color:#9a3412;margin-bottom:3px">⚠ Race condition</div>
+        <p style="font:13px/1.6 Inter;color:#7c2d12;margin:0">On <code style="font:12px JetBrains Mono,monospace;background:#fff;padding:1px 5px;border-radius:4px">POST /book</code>, re-check the slot inside a DB transaction with a lock before inserting — two people can submit the same slot seconds apart. Add a partial unique constraint or a <code style="font:12px JetBrains Mono,monospace;background:#fff;padding:1px 5px;border-radius:4px">lockForUpdate()</code> guard.</p>
+      </div>
+
+      <!-- ===== 5. NOTIFICATION JOB ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">5 · Owner notification (queued job)</h2>
+      <p style="font:14px/1.65 Inter;color:#3f3f46;margin:0 0 10px">After a booking is stored, dispatch a queued job so the visitor's request returns instantly while the Facebook message sends in the background.</p>
+      <pre class="keep" style="background:#18181b;color:#e4e4e7;font:12px/1.7 JetBrains Mono,monospace;padding:14px 16px;border-radius:8px;overflow-x:auto;margin:0 0 12px">// BookingController@store, after $booking->save()
+NotifyOwnerOfBooking::dispatch($booking);
+
+// app/Jobs/NotifyOwnerOfBooking.php  (implements ShouldQueue)
+public function handle(FacebookService $fb): void {
+    $fb->sendOwnerMessage(
+        "New booking request: {$this->booking->sport->name} on "
+        . "{$this->booking->booking_date->format('M j')} "
+        . "{$this->booking->start_time}. From {$this->booking->guest_name}."
+    );
+    $this->booking->notifications()->create([
+        'channel' => 'facebook', 'status' => 'sent', 'sent_at' => now(),
+    ]);
+}</pre>
+      <ul style="font:14px/1.7 Inter;color:#3f3f46;margin:0;padding-left:20px">
+        <li><strong>Facebook delivery:</strong> use the <em>Messenger Send API</em> with a Page access token, OR (simpler) the owner opts into a Facebook webhook bot. Easiest fallback for v1: send to a private group / page via the Graph API. Wrap it in <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">FacebookService</code> so the channel can be swapped.</li>
+        <li><strong>Laravel 13 tip:</strong> centralise queue routing with <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">Queue::route(NotifyOwnerOfBooking::class, queue: 'notifications')</code> in a service provider. Use <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Tries(3)]</code> + <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#[Backoff]</code> attributes so a flaky FB API retries.</li>
+        <li><strong>In-app admin alert</strong> is immediate — a <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">pending</code> badge on the dashboard from a simple count query; no job needed.</li>
+        <li><strong>Confirm/decline</strong> from admin should notify the <em>requester</em> back (SMS/FB/none for v1) and write a <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">notifications</code> row.</li>
+      </ul>
+
+      <!-- ===== 6. FRONTEND ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">6 · Frontend — pages &amp; components</h2>
+      <p style="font:13px/1.6 Inter;color:#52525b;margin:0 0 8px">Inertia pages in <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">resources/js/pages/</code>; shadcn components in <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">resources/js/components/ui/</code>.</p>
+      <div class="keep" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;margin-bottom:14px">
+        <table style="width:100%;border-collapse:collapse;font:13px Inter">
+          <thead><tr style="background:#fafafa"><td style="padding:8px 13px;font:600 12px Inter;color:#52525b;border-bottom:1px solid #e4e4e7;width:30%">Page</td><td style="padding:8px 13px;font:600 12px Inter;color:#52525b;border-bottom:1px solid #e4e4e7">Key components / shadcn</td></tr></thead>
+          <tbody style="font:12.5px Inter;color:#3f3f46">
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Home</td><td style="padding:7px 13px;color:#52525b"><code style="font:11px JetBrains Mono,monospace">Carousel</code> hero · sport chips · featured <code style="font:11px JetBrains Mono,monospace">Card</code> grid · quick-check bar</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Booking</td><td style="padding:7px 13px;color:#52525b">sport <code style="font:11px JetBrains Mono,monospace">ToggleGroup</code> · <code style="font:11px JetBrains Mono,monospace">Calendar</code> · slot list · details <code style="font:11px JetBrains Mono,monospace">Form</code> · stepper</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Confirmation</td><td style="padding:7px 13px;color:#52525b">success <code style="font:11px JetBrains Mono,monospace">Card</code> · summary rows · "payment in person" <code style="font:11px JetBrains Mono,monospace">Alert</code></td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Pricing</td><td style="padding:7px 13px;color:#52525b"><code style="font:11px JetBrains Mono,monospace">Table</code> (sport × off-peak/peak)</td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Faqs</td><td style="padding:7px 13px;color:#52525b"><code style="font:11px JetBrains Mono,monospace">Accordion</code></td></tr>
+            <tr style="border-bottom:1px solid #f4f4f5"><td style="padding:7px 13px;font-weight:600">Contact</td><td style="padding:7px 13px;color:#52525b">Google Maps embed · info list · message <code style="font:11px JetBrains Mono,monospace">Form</code></td></tr>
+            <tr><td style="padding:7px 13px;font-weight:600">Admin/*</td><td style="padding:7px 13px;color:#52525b">sidebar layout · stat tiles · bookings <code style="font:11px JetBrains Mono,monospace">DataTable</code> · <code style="font:11px JetBrains Mono,monospace">Dialog</code> · <code style="font:11px JetBrains Mono,monospace">Tabs</code> · drag-sort <code style="font:11px JetBrains Mono,monospace">Card</code> list for slides</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font:13px/1.6 Inter;color:#71717a;margin:0">Shared: <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">PublicLayout</code> (navbar + footer) and <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">AdminLayout</code> (the starter kit already ships one). Brand accent <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">#ef5b2b</code> — set it as the shadcn <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">--primary</code> token.</p>
+
+      <!-- ===== 7. BUILD ORDER ===== -->
+      <h2 style="font:700 19px Inter;color:#18181b;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid #f4f4f5">7 · Suggested build order</h2>
+      <div class="keep" style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">1</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Commit the clean starter</strong>, confirm <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">php -v</code> ≥ 8.3 and pick one package manager (pnpm per <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">pnpm-workspace.yaml</code>).</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">2</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Migrations + models + enums + seeders</strong> (1 court, 4 sports, operating hours, sample rates).</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">3</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>AvailabilityService + <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">/api/availability</code></strong>, tested with seeded data.</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">4</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Booking flow</strong> — page, store, confirmation, race-condition guard.</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">5</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Admin bookings</strong> — table, confirm/decline, dashboard counts.</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">6</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Queued notification job</strong> + <code style="font:12px JetBrains Mono,monospace;background:#f4f4f5;padding:1px 5px;border-radius:4px">FacebookService</code> (stub first, real token later).</div></div>
+        <div style="display:flex;gap:11px;align-items:flex-start"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:#ef5b2b;color:#fff;font:600 12px Inter;display:flex;align-items:center;justify-content:center">7</div><div style="font:14px/1.5 Inter;color:#3f3f46;padding-top:1px"><strong>Public pages + CMS</strong> — Home/carousel, About, Facilities, Pricing, FAQ, Contact, and their admin editors.</div></div>
+      </div>
+
+      <div style="margin-top:30px;padding-top:14px;border-top:1px solid #e4e4e7;font:12px Inter;color:#a1a1aa;text-align:center">AGREDA PHASE III · Developer Handoff Spec · pair with Wireframes.dc.html + ERD.dc.html</div>
+
+    </td></tr></tbody>
+    <tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+  </table>
+</main>
+</x-dc>
+</body>
+</html>

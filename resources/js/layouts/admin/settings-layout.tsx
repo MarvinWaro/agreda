@@ -58,6 +58,21 @@ const groups: Group[] = [
         ],
     },
     {
+        label: 'Clubs',
+        items: [
+            {
+                title: 'Clubs',
+                href: '/admin/clubs',
+                permission: 'clubs.manage',
+            },
+            {
+                title: 'Membership applications',
+                href: '/admin/club-members',
+                permission: 'clubs.manage',
+            },
+        ],
+    },
+    {
         label: 'Access',
         items: [
             {

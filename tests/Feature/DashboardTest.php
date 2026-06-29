@@ -13,7 +13,7 @@ test('admins are sent to the admin dashboard', function () {
     $this->get(route('dashboard'))->assertRedirect(route('admin.dashboard'));
 });
 
-test('users without admin access are sent to the home page', function () {
+test('users without admin access and no club applications are sent home', function () {
     $this->actingAs(User::factory()->create());
 
     $this->get(route('dashboard'))->assertRedirect(route('home'));

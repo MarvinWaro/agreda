@@ -32,6 +32,7 @@ class Rbac
         'settings.manage',
         'users.manage',
         'roles.manage',
+        'clubs.manage',
     ];
 
     /**
@@ -49,6 +50,7 @@ class Rbac
             'content.manage',
             'sports.manage',
             'settings.manage',
+            'clubs.manage',
         ],
         self::STAFF => [
             'admin.access',

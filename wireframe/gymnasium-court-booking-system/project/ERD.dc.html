@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;display=swap" rel="stylesheet">
+<style> body { margin:0; font-family: system-ui, sans-serif; } </style>
+</helmet>
+
+<!-- TITLE -->
+<div style="position:absolute;left:80px;top:24px;width:760px">
+  <div style="font:700 30px Caveat,cursive;color:#1f1f1f">AGREDA PHASE III — Database ERD</div>
+  <div style="font:13px system-ui;color:#777;margin-top:2px">Schema for the Laravel booking system. 🔑 = primary key · ↗ FK = foreign key · crow's-foot ─&lt; = "has many".</div>
+</div>
+
+<!-- LEGEND -->
+
+
+<!-- ===================== SVG RELATIONSHIP LINES ===================== -->
+<svg width="1600" height="1050" style="position:absolute;left:0;top:90px;z-index:0;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="crow" markerWidth="20" markerHeight="20" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M16,9 L2,2 M16,9 L2,9 M16,9 L2,16" stroke="#ef5b2b" stroke-width="1.7" fill="none"></path>
+    </marker>
+    <marker id="one" markerWidth="16" markerHeight="16" refX="9" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M9,2 L9,14" stroke="#ef5b2b" stroke-width="1.7"></path>
+    </marker>
+  </defs>
+  <!-- users -> bookings -->
+  <line x1="310" y1="125" x2="470" y2="150" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- sports -> bookings -->
+  <line x1="920" y1="120" x2="740" y2="170" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- courts -> bookings -->
+  <line x1="920" y1="330" x2="740" y2="290" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- sports -> court_sport -->
+  <line x1="1150" y1="95" x2="1320" y2="105" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- courts -> court_sport -->
+  <line x1="1150" y1="300" x2="1320" y2="150" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- courts -> operating_hours -->
+  <line x1="1035" y1="415" x2="1045" y2="470" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- courts -> court_closures -->
+  <line x1="1150" y1="320" x2="1430" y2="270" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+  <!-- bookings -> notifications -->
+  <line x1="605" y1="350" x2="595" y2="470" stroke="#ef5b2b" stroke-width="1.8" marker-start="url(#one)" marker-end="url(#crow)"></line>
+<div style="position: absolute; left: 1225px; top: 569px; width: 300px; background: #fff; border: 1.5px solid #2b2b2b; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.1); padding: 11px 13px; font: 11px system-ui; color: #555">
+  <div style="font:600 12px system-ui;color:#333;margin-bottom:7px">Legend</div>
+  <div style="display:flex;flex-direction:column;gap:5px">
+    <div><span style="color:#ef5b2b">🔑</span> primary key &nbsp;·&nbsp; <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 5px;font:9px ui-monospace,monospace">FK</span> foreign key</div>
+    <div>┤ &nbsp;one &nbsp;&nbsp; ─&lt; &nbsp;many &nbsp;→&nbsp; one&nbsp;table&nbsp;<b>has&nbsp;many</b>&nbsp;of&nbsp;another</div>
+    <div style="color:#999;font-size:10px">Tan panel = CMS tables (admin-managed, standalone).</div>
+  </div>
+</div></svg>
+
+<!-- ===================== ENTITY: users ===================== -->
+<div style="position:absolute;left:80px;top:110px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">users</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>name</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>email</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>phone</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>role</span><span style="color:#999">enum</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>facebook_id</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>password</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>timestamps</span><span style="color:#999">ts</span></div>
+  </div>
+</div>
+
+<!-- ===================== ENTITY: bookings (hub) ===================== -->
+<div style="position:absolute;left:470px;top:150px;width:270px;background:#fff;border:1.5px solid #ef5b2b;border-radius:6px;box-shadow:0 2px 8px rgba(239,91,43,.18);overflow:hidden">
+  <div style="background:#ef5b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">bookings</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ user_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK?</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ court_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ sport_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>guest_name</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>guest_phone</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>booking_date</span><span style="color:#999">date</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>start_time</span><span style="color:#999">time</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>end_time</span><span style="color:#999">time</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>status</span><span style="color:#999">enum</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>total_price</span><span style="color:#999">decimal</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>notes</span><span style="color:#999">text</span></div>
+  </div>
+</div>
+
+<!-- ===================== ENTITY: notifications ===================== -->
+<div style="position:absolute;left:470px;top:560px;width:250px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">notifications</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ booking_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>channel</span><span style="color:#999">enum</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>status</span><span style="color:#999">enum</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>sent_at</span><span style="color:#999">ts</span></div>
+  </div>
+  <div style="font:9px ui-monospace,monospace;color:#aaa;padding:6px 11px;border-top:1px dashed #e2e2e2">channel: facebook · admin · email</div>
+</div>
+
+<!-- ===================== ENTITY: sports ===================== -->
+<div style="position:absolute;left:920px;top:30px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">sports</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>name</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>slug</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>icon</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>rate_offpeak</span><span style="color:#999">decimal</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>rate_peak</span><span style="color:#999">decimal</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>is_active</span><span style="color:#999">bool</span></div>
+  </div>
+</div>
+
+<!-- ===================== ENTITY: courts ===================== -->
+<div style="position:absolute;left:920px;top:360px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">courts</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>name</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>description</span><span style="color:#999">text</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>location</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>is_active</span><span style="color:#999">bool</span></div>
+  </div>
+</div>
+
+<!-- ===================== ENTITY: court_sport (pivot) ===================== -->
+<div style="position:absolute;left:1320px;top:60px;width:220px;background:#fff;border:1.5px dashed #888;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#6b6b6b;color:#fff;font:600 13px system-ui;padding:7px 11px">court_sport <span style="font:9px ui-monospace,monospace;opacity:.8">pivot</span></div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ court_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>↗ sport_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+  </div>
+  <div style="font:9px ui-monospace,monospace;color:#aaa;padding:6px 11px;border-top:1px dashed #e2e2e2">which sports a court supports</div>
+</div>
+
+<!-- ===================== ENTITY: operating_hours ===================== -->
+<div style="position:absolute;left:920px;top:560px;width:250px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">operating_hours</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ court_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>day_of_week</span><span style="color:#999">tinyint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>open_time</span><span style="color:#999">time</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>close_time</span><span style="color:#999">time</span></div>
+  </div>
+</div>
+
+<!-- ===================== ENTITY: court_closures ===================== -->
+<div style="position:absolute;left:1320px;top:360px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">court_closures</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>↗ court_id <span style="background:#fdeee7;color:#ef5b2b;border-radius:3px;padding:0 4px;font-size:9px">FK</span></span><span style="color:#999">bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>date</span><span style="color:#999">date</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>reason</span><span style="color:#999">string</span></div>
+  </div>
+  <div style="font:9px ui-monospace,monospace;color:#aaa;padding:6px 11px;border-top:1px dashed #e2e2e2">holidays / maintenance</div>
+</div>
+
+<!-- ===================== CMS GROUP PANEL ===================== -->
+<div style="position:absolute;left:60px;top:760px;width:1480px;height:280px;background:rgba(250,231,223,.45);border:1.5px dashed #d8a892;border-radius:10px"></div>
+<div style="position:absolute;left:78px;top:772px;font:600 16px Caveat,cursive;color:#c5562f">CMS / content tables — admin-managed, standalone (no booking FKs)</div>
+
+<!-- carousel_slides -->
+<div style="position:absolute;left:80px;top:810px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">carousel_slides</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>title</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>image_path</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>caption</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>link_url</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>sort_order</span><span style="color:#999">int</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>is_visible</span><span style="color:#999">bool</span></div>
+  </div>
+</div>
+
+<!-- events -->
+<div style="position:absolute;left:340px;top:810px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">events</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>title</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>description</span><span style="color:#999">text</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>image_path</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>event_date</span><span style="color:#999">date</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>is_featured</span><span style="color:#999">bool</span></div>
+  </div>
+</div>
+
+<!-- faqs -->
+<div style="position:absolute;left:600px;top:810px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">faqs</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>category</span><span style="color:#999">enum</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>question</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>answer</span><span style="color:#999">text</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>sort_order</span><span style="color:#999">int</span></div>
+  </div>
+</div>
+
+<!-- pages -->
+<div style="position:absolute;left:860px;top:810px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">pages</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>slug</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>title</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>body</span><span style="color:#999">longtext</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>updated_at</span><span style="color:#999">ts</span></div>
+  </div>
+  <div style="font:9px ui-monospace,monospace;color:#aaa;padding:6px 11px;border-top:1px dashed #e2e2e2">About, etc.</div>
+</div>
+
+<!-- settings -->
+<div style="position:absolute;left:1120px;top:810px;width:230px;background:#fff;border:1.5px solid #2b2b2b;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden">
+  <div style="background:#2b2b2b;color:#fff;font:600 13px system-ui;padding:7px 11px">settings</div>
+  <div style="font:11px ui-monospace,monospace">
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#ef5b2b;font-weight:700"><span>🔑 id</span><span>bigint</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>key</span><span style="color:#999">string</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;border-bottom:1px solid #f2f2f2;color:#444"><span>value</span><span style="color:#999">text</span></div>
+    <div style="display:flex;justify-content:space-between;padding:4px 11px;color:#444"><span>group</span><span style="color:#999">string</span></div>
+  </div>
+  <div style="font:9px ui-monospace,monospace;color:#aaa;padding:6px 11px;border-top:1px dashed #e2e2e2">phone · fb page · map · hours</div>
+</div>
+</x-dc>
+</body>
+</html>

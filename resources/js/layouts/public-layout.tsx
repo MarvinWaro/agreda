@@ -24,6 +24,7 @@ const navLinks: NavLink[] = [
     { title: 'About', href: '/about' },
     { title: 'Facilities', href: '/facilities' },
     { title: 'Pricing', href: '/pricing' },
+    { title: 'Clubs', href: '/clubs' },
     { title: 'FAQ', href: '/faqs' },
     { title: 'Contact', href: '/contact' },
 ];

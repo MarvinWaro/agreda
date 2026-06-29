@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CarouselSlide;
+use App\Models\Club;
 use App\Models\Court;
 use App\Models\Event;
 use App\Models\Faq;
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->seedUsers();
         $this->seedSettings();
         $this->seedContent();
+        $this->seedClubs();
     }
 
     private function seedCourt(): Court
@@ -76,10 +78,10 @@ class DatabaseSeeder extends Seeder
 
     private function seedUsers(): void
     {
-        if (! User::query()->where('email', 'owner@agreda.test')->exists()) {
+        if (! User::query()->where('email', 'admin@agreda.test')->exists()) {
             User::factory()->admin()->create([
-                'name' => 'AGREDA Owner',
-                'email' => 'owner@agreda.test',
+                'name' => 'AGREDA Admin',
+                'email' => 'admin@agreda.test',
             ]);
         }
 
@@ -165,6 +167,33 @@ class DatabaseSeeder extends Seeder
                 ['title' => $event['title']],
                 [...$event, 'image_path' => null],
             );
+        }
+    }
+
+    private function seedClubs(): void
+    {
+        $basketball = Sport::query()->where('slug', 'basketball')->first();
+
+        $club = Club::query()->updateOrCreate(
+            ['slug' => 'basketball-club'],
+            [
+                'name' => 'Basketball Club',
+                'sport_id' => $basketball?->id,
+                'description' => 'The official AGREDA PHASE III basketball club, open to residents who want to play regularly and join club activities.',
+                'membership_fee' => 200.00,
+                'is_active' => true,
+            ],
+        );
+
+        $roles = [
+            ['name' => 'President', 'is_default' => false],
+            ['name' => 'Vice President', 'is_default' => false],
+            ['name' => 'Treasurer', 'is_default' => false],
+            ['name' => 'Member', 'is_default' => true],
+        ];
+
+        foreach ($roles as $role) {
+            $club->roles()->updateOrCreate(['name' => $role['name']], $role);
         }
     }
 }

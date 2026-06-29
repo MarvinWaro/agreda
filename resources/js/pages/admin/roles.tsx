@@ -38,6 +38,7 @@ const permissionLabels: Record<string, string> = {
     'settings.manage': 'Manage settings',
     'users.manage': 'Manage users',
     'roles.manage': 'Manage roles & permissions',
+    'clubs.manage': 'Manage clubs & membership applications',
 };
 
 function label(permission: string): string {

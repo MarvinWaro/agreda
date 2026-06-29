@@ -20,6 +20,9 @@ const adminHubPages = new Set([
     'admin/users',
     'admin/roles',
     'admin/settings',
+    'admin/clubs',
+    'admin/club-detail',
+    'admin/club-members',
 ]);
 
 createInertiaApp({
