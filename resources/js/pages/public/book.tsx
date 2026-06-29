@@ -391,14 +391,14 @@ export default function Book({ sports }: Props) {
                                         !availability.closed &&
                                         availability.slots.length > 0 && (
                                             <>
-                                                {startIdx !== null && (
-                                                    <p className="mb-2 text-xs text-muted-foreground">
-                                                        {endIdx === null
-                                                            ? `${formatTime(slots[startIdx].start)} selected — click an end slot to span multiple hours, or submit for a single hour.`
-                                                            : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
-                                                    </p>
-                                                )}
-                                                <div className="flex flex-col gap-2">
+                                                <p className="mb-2 text-xs text-muted-foreground">
+                                                    {startIdx === null
+                                                        ? 'Tap a start time, then an end time for a multi-hour booking.'
+                                                        : endIdx === null
+                                                          ? `${formatTime(slots[startIdx].start)} selected — tap an end time, or submit for a single hour.`
+                                                          : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
+                                                </p>
+                                                <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
                                                     {availability.slots.map(
                                                         (item, index) => {
                                                             const isInRange =
@@ -416,6 +416,7 @@ export default function Book({ sports }: Props) {
                                                                         item.start
                                                                     }
                                                                     type="button"
+                                                                    title={`${formatTime(item.start)} – ${formatTime(item.end)} · ${slotMeta[item.status].label}`}
                                                                     disabled={
                                                                         !item.selectable &&
                                                                         !isInRange
@@ -426,47 +427,42 @@ export default function Book({ sports }: Props) {
                                                                         )
                                                                     }
                                                                     className={cn(
-                                                                        'flex items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors',
+                                                                        'rounded-md border px-2 py-1.5 text-xs font-medium transition-colors',
                                                                         isInRange
-                                                                            ? 'border-primary bg-primary/10 font-medium text-primary'
-                                                                            : item.selectable
-                                                                              ? 'border-input hover:border-primary'
-                                                                              : 'cursor-not-allowed border-input bg-muted text-muted-foreground',
+                                                                            ? 'border-primary bg-primary text-primary-foreground'
+                                                                            : item.status ===
+                                                                                'pending'
+                                                                              ? 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-700'
+                                                                              : item.selectable
+                                                                                ? 'border-input hover:border-primary hover:bg-primary/5'
+                                                                                : 'cursor-not-allowed border-transparent bg-muted text-muted-foreground',
                                                                     )}
                                                                 >
-                                                                    <span>
-                                                                        {formatTime(
-                                                                            item.start,
-                                                                        )}{' '}
-                                                                        –{' '}
-                                                                        {formatTime(
-                                                                            item.end,
-                                                                        )}
-                                                                    </span>
-                                                                    <span
-                                                                        className={cn(
-                                                                            'text-xs',
-                                                                            isInRange
-                                                                                ? 'text-primary'
-                                                                                : slotMeta[
-                                                                                      item
-                                                                                          .status
-                                                                                  ]
-                                                                                      .className,
-                                                                        )}
-                                                                    >
-                                                                        {isInRange
-                                                                            ? 'Selected'
-                                                                            : slotMeta[
-                                                                                  item
-                                                                                      .status
-                                                                              ]
-                                                                                  .label}
-                                                                    </span>
+                                                                    {formatTime(
+                                                                        item.start,
+                                                                    )}
                                                                 </button>
                                                             );
                                                         },
                                                     )}
+                                                </div>
+                                                <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="size-2 rounded-full bg-primary" />{' '}
+                                                        Selected
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="size-2 rounded-full border border-input" />{' '}
+                                                        Free
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="size-2 rounded-full bg-amber-200" />{' '}
+                                                        Pending
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="size-2 rounded-full bg-muted-foreground/40" />{' '}
+                                                        Booked / past
+                                                    </span>
                                                 </div>
                                             </>
                                         )}
