@@ -32,7 +32,7 @@ export default function Contact({ contact }: Props) {
         <>
             <Head title="Contact" />
 
-            <div className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6">
+            <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
                 <h1 className="text-2xl font-bold tracking-tight">
                     Contact us
                 </h1>
