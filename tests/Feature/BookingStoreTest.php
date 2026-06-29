@@ -44,6 +44,7 @@ test('a visitor can submit a booking request', function () {
         'sport_id' => $sport->id,
         'date' => '2026-06-26',
         'start_time' => '09:00',
+        'end_time' => '10:00',
         'guest_name' => 'Juan Dela Cruz',
         'guest_phone' => '09171234567',
         'notes' => 'Birthday game',
@@ -70,11 +71,55 @@ test('evening slots are charged the peak rate', function () {
         'sport_id' => $sport->id,
         'date' => '2026-06-26',
         'start_time' => '18:00',
+        'end_time' => '19:00',
         'guest_name' => 'Mia Reyes',
         'guest_phone' => '09170000000',
     ]);
 
     expect(Booking::sole()->total_price)->toBe('800.00');
+});
+
+test('a visitor can book a contiguous multi-hour range', function () {
+    $this->travelTo(CarbonImmutable::parse('2026-06-25 09:00:00'));
+    [, $sport] = bookingCourt('2026-06-26');
+
+    $response = $this->post(route('booking.store'), [
+        'sport_id' => $sport->id,
+        'date' => '2026-06-26',
+        'start_time' => '09:00',
+        'end_time' => '11:00',
+        'guest_name' => 'Multi Hour',
+        'guest_phone' => '09170000000',
+    ]);
+
+    $booking = Booking::sole();
+
+    $response->assertRedirect(route('booking.done', $booking));
+
+    expect($booking->start_time)->toBe('09:00:00')
+        ->and($booking->end_time)->toBe('11:00:00')
+        ->and($booking->total_price)->toBe('1000.00');
+});
+
+test('a multi-hour range overlapping an existing booking is rejected', function () {
+    $this->travelTo(CarbonImmutable::parse('2026-06-25 09:00:00'));
+    [$court, $sport] = bookingCourt('2026-06-26');
+
+    Booking::factory()->for($court)->for($sport)->confirmed()->forSlot('2026-06-26', '10:00', '11:00')->create();
+
+    $this->from(route('booking.create'))
+        ->post(route('booking.store'), [
+            'sport_id' => $sport->id,
+            'date' => '2026-06-26',
+            'start_time' => '09:00',
+            'end_time' => '11:00',
+            'guest_name' => 'Blocked Guest',
+            'guest_phone' => '09170000000',
+        ])
+        ->assertRedirect(route('booking.create'))
+        ->assertSessionHasErrors('start_time');
+
+    expect(Booking::count())->toBe(1);
 });
 
 test('a slot that is already taken is rejected and creates no booking', function () {
@@ -88,6 +133,7 @@ test('a slot that is already taken is rejected and creates no booking', function
             'sport_id' => $sport->id,
             'date' => '2026-06-26',
             'start_time' => '09:00',
+            'end_time' => '10:00',
             'guest_name' => 'Late Guest',
             'guest_phone' => '09170000000',
         ])
@@ -106,6 +152,7 @@ test('a booking in the past is rejected', function () {
             'sport_id' => $sport->id,
             'date' => '2026-06-24',
             'start_time' => '09:00',
+            'end_time' => '10:00',
             'guest_name' => 'Time Traveller',
             'guest_phone' => '09170000000',
         ])
@@ -117,7 +164,7 @@ test('a booking in the past is rejected', function () {
 test('booking validation requires the key fields', function () {
     $this->from(route('booking.create'))
         ->post(route('booking.store'), [])
-        ->assertSessionHasErrors(['sport_id', 'date', 'start_time', 'guest_name', 'guest_phone']);
+        ->assertSessionHasErrors(['sport_id', 'date', 'start_time', 'end_time', 'guest_name', 'guest_phone']);
 });
 
 test('the confirmation page shows the booking summary', function () {

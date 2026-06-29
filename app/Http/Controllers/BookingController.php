@@ -76,6 +76,7 @@ class BookingController extends Controller
             $court,
             CarbonImmutable::parse($data['date']),
             $data['start_time'],
+            $data['end_time'],
             [
                 'guest_name' => $data['guest_name'],
                 'guest_phone' => $data['guest_phone'],

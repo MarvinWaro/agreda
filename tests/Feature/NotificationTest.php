@@ -29,6 +29,7 @@ test('submitting a booking dispatches the owner notification', function () {
         'sport_id' => $sport->id,
         'date' => '2026-06-26',
         'start_time' => '09:00',
+        'end_time' => '10:00',
         'guest_name' => 'Juan Dela Cruz',
         'guest_phone' => '09170000000',
     ]);

@@ -39,6 +39,7 @@ type BookForm = {
     sport_id: number | null;
     date: string;
     start_time: string;
+    end_time: string;
     guest_name: string;
     guest_phone: string;
     notes: string;
@@ -53,6 +54,18 @@ const stepLabels = ['Sport', 'Date', 'Time', 'Details'];
 
 function toYmd(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/** Format a "HH:MM" 24h string as a 12h label, e.g. "11:00 AM". */
+function formatTime(hhmm: string): string {
+    const [hour, minute] = hhmm.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hour, minute, 0, 0);
+
+    return date.toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
+    });
 }
 
 const slotMeta: Record<Slot['status'], { label: string; className: string }> = {
@@ -98,7 +111,10 @@ function Stepper({ current }: { current: number }) {
 export default function Book({ sports }: Props) {
     const [sportId, setSportId] = useState<number | null>(null);
     const [date, setDate] = useState<Date | undefined>(undefined);
-    const [slot, setSlot] = useState<string | null>(null);
+    // A booking spans a contiguous run of slots: [startIdx, endIdx] inclusive.
+    // While picking, endIdx is null (start chosen, waiting for the end).
+    const [startIdx, setStartIdx] = useState<number | null>(null);
+    const [endIdx, setEndIdx] = useState<number | null>(null);
     const [availability, setAvailability] = useState<Availability | null>(null);
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [slotsError, setSlotsError] = useState<string | null>(null);
@@ -107,6 +123,7 @@ export default function Book({ sports }: Props) {
         sport_id: null,
         date: '',
         start_time: '',
+        end_time: '',
         guest_name: '',
         guest_phone: '',
         notes: '',
@@ -117,11 +134,54 @@ export default function Book({ sports }: Props) {
     today.setHours(0, 0, 0, 0);
     const requestRef = useRef(0);
 
+    const slots = availability?.slots ?? [];
+    const rangeChosen = startIdx !== null && endIdx !== null;
+
+    const resetSelection = () => {
+        setStartIdx(null);
+        setEndIdx(null);
+    };
+
+    // Every slot from `from` to `to` is free and butts up against the next.
+    const canSpan = (from: number, to: number): boolean => {
+        for (let i = from; i <= to; i++) {
+            if (!slots[i].selectable) {
+                return false;
+            }
+
+            if (i > from && slots[i - 1].end !== slots[i].start) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const handleSlotClick = (index: number) => {
+        // Start a fresh selection when nothing is pending, a range is already
+        // complete, or the click lands before the current start.
+        if (startIdx === null || endIdx !== null || index < startIdx) {
+            setStartIdx(index);
+            setEndIdx(null);
+
+            return;
+        }
+
+        // A start is pending and the click is at/after it — extend if the whole
+        // span is free and contiguous, otherwise restart from here.
+        if (canSpan(startIdx, index)) {
+            setEndIdx(index);
+        } else {
+            setStartIdx(index);
+            setEndIdx(null);
+        }
+    };
+
     const loadSlots = (
         nextSportId: number | null,
         nextDate: Date | undefined,
     ) => {
-        setSlot(null);
+        resetSelection();
         setAvailability(null);
         setSlotsError(null);
 
@@ -173,13 +233,20 @@ export default function Book({ sports }: Props) {
         loadSlots(sportId, nextDate);
     };
 
-    const currentStep = !sportId ? 0 : !date ? 1 : !slot ? 2 : 3;
+    const currentStep = !sportId ? 0 : !date ? 1 : !rangeChosen ? 2 : 3;
     const selectedSport = sports.find((sport) => sport.id === sportId) ?? null;
+
+    const selectedStart =
+        startIdx !== null && slots[startIdx] ? slots[startIdx].start : null;
+    const selectedEnd =
+        endIdx !== null && slots[endIdx] ? slots[endIdx].end : null;
+    const selectedHours =
+        startIdx !== null && endIdx !== null ? endIdx - startIdx + 1 : 0;
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
 
-        if (!sportId || !dateStr || !slot) {
+        if (!sportId || !dateStr || !selectedStart || !selectedEnd) {
             return;
         }
 
@@ -187,7 +254,8 @@ export default function Book({ sports }: Props) {
             ...data,
             sport_id: sportId,
             date: dateStr,
-            start_time: slot,
+            start_time: selectedStart,
+            end_time: selectedEnd,
         }));
 
         form.post('/book', { preserveScroll: true });
@@ -322,61 +390,81 @@ export default function Book({ sports }: Props) {
                                     {availability &&
                                         !availability.closed &&
                                         availability.slots.length > 0 && (
-                                            <div className="flex flex-col gap-2">
-                                                {availability.slots.map(
-                                                    (item) => {
-                                                        const isSelected =
-                                                            slot === item.start;
+                                            <>
+                                                {startIdx !== null && (
+                                                    <p className="mb-2 text-xs text-muted-foreground">
+                                                        {endIdx === null
+                                                            ? `${formatTime(slots[startIdx].start)} selected — click an end slot to span multiple hours, or submit for a single hour.`
+                                                            : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
+                                                    </p>
+                                                )}
+                                                <div className="flex flex-col gap-2">
+                                                    {availability.slots.map(
+                                                        (item, index) => {
+                                                            const isInRange =
+                                                                startIdx !==
+                                                                    null &&
+                                                                index >=
+                                                                    startIdx &&
+                                                                index <=
+                                                                    (endIdx ??
+                                                                        startIdx);
 
-                                                        return (
-                                                            <button
-                                                                key={item.start}
-                                                                type="button"
-                                                                disabled={
-                                                                    !item.selectable
-                                                                }
-                                                                onClick={() =>
-                                                                    setSlot(
-                                                                        item.start,
-                                                                    )
-                                                                }
-                                                                className={cn(
-                                                                    'flex items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors',
-                                                                    isSelected
-                                                                        ? 'border-primary bg-primary/10 font-medium text-primary'
-                                                                        : item.selectable
-                                                                          ? 'border-input hover:border-primary'
-                                                                          : 'cursor-not-allowed border-input bg-muted text-muted-foreground',
-                                                                )}
-                                                            >
-                                                                <span>
-                                                                    {item.label}
-                                                                </span>
-                                                                <span
+                                                            return (
+                                                                <button
+                                                                    key={
+                                                                        item.start
+                                                                    }
+                                                                    type="button"
+                                                                    disabled={
+                                                                        !item.selectable &&
+                                                                        !isInRange
+                                                                    }
+                                                                    onClick={() =>
+                                                                        handleSlotClick(
+                                                                            index,
+                                                                        )
+                                                                    }
                                                                     className={cn(
-                                                                        'text-xs',
-                                                                        isSelected
-                                                                            ? 'text-primary'
+                                                                        'flex items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors',
+                                                                        isInRange
+                                                                            ? 'border-primary bg-primary/10 font-medium text-primary'
+                                                                            : item.selectable
+                                                                              ? 'border-input hover:border-primary'
+                                                                              : 'cursor-not-allowed border-input bg-muted text-muted-foreground',
+                                                                    )}
+                                                                >
+                                                                    <span>
+                                                                        {
+                                                                            item.label
+                                                                        }
+                                                                    </span>
+                                                                    <span
+                                                                        className={cn(
+                                                                            'text-xs',
+                                                                            isInRange
+                                                                                ? 'text-primary'
+                                                                                : slotMeta[
+                                                                                      item
+                                                                                          .status
+                                                                                  ]
+                                                                                      .className,
+                                                                        )}
+                                                                    >
+                                                                        {isInRange
+                                                                            ? 'Selected'
                                                                             : slotMeta[
                                                                                   item
                                                                                       .status
                                                                               ]
-                                                                                  .className,
-                                                                    )}
-                                                                >
-                                                                    {isSelected
-                                                                        ? 'Selected'
-                                                                        : slotMeta[
-                                                                              item
-                                                                                  .status
-                                                                          ]
-                                                                              .label}
-                                                                </span>
-                                                            </button>
-                                                        );
-                                                    },
-                                                )}
-                                            </div>
+                                                                                  .label}
+                                                                    </span>
+                                                                </button>
+                                                            );
+                                                        },
+                                                    )}
+                                                </div>
+                                            </>
                                         )}
 
                                     {form.errors.date && (
@@ -479,7 +567,7 @@ export default function Book({ sports }: Props) {
                                 <Button
                                     type="submit"
                                     className="w-full"
-                                    disabled={!slot || form.processing}
+                                    disabled={!rangeChosen || form.processing}
                                 >
                                     {form.processing ? (
                                         <>
@@ -494,9 +582,9 @@ export default function Book({ sports }: Props) {
                                     )}
                                 </Button>
 
-                                {!slot && (
+                                {!rangeChosen && (
                                     <p className="text-center text-xs text-muted-foreground">
-                                        Select a sport, date and time slot to
+                                        Select a sport, date and time range to
                                         continue.
                                     </p>
                                 )}

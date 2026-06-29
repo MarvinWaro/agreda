@@ -26,6 +26,7 @@ class StoreBookingRequest extends FormRequest
             'sport_id' => ['required', 'integer', 'exists:sports,id'],
             'date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
             'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
             'guest_name' => ['required', 'string', 'max:255'],
             'guest_phone' => ['required', 'string', 'max:30'],
             'notes' => ['nullable', 'string', 'max:1000'],
