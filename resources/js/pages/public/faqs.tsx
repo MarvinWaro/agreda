@@ -18,7 +18,7 @@ export default function Faqs({ faqs }: { faqs: Faq[] }) {
         <>
             <Head title="Rules & FAQ" />
 
-            <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
+            <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
                 <h1 className="text-2xl font-bold tracking-tight">
                     Rules &amp; FAQ
                 </h1>

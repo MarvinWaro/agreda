@@ -20,7 +20,7 @@ export default function Facilities({ page, sports, amenities }: Props) {
         <>
             <Head title="Facilities" />
 
-            <div className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6">
+            <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
                 <h1 className="text-2xl font-bold tracking-tight">
                     {page.title}
                 </h1>

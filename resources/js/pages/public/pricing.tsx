@@ -21,7 +21,7 @@ export default function Pricing({ sports }: { sports: Sport[] }) {
         <>
             <Head title="Pricing" />
 
-            <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
+            <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
                 <h1 className="text-2xl font-bold tracking-tight">
                     Court rates
                 </h1>
