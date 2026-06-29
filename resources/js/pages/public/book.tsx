@@ -281,216 +281,210 @@ export default function Book({ sports }: Props) {
                     <Stepper current={currentStep} />
                 </div>
 
-                <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-                    <div className="space-y-6">
-                        {/* Step 1 — sport */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base">
-                                    1 · Choose a sport
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ToggleGroup
-                                    type="single"
-                                    value={sportId ? String(sportId) : ''}
-                                    onValueChange={handleSportChange}
-                                    className="flex flex-wrap justify-start gap-2"
-                                >
-                                    {sports.map((sport) => (
-                                        <ToggleGroupItem
-                                            key={sport.id}
-                                            value={String(sport.id)}
-                                            variant="outline"
-                                            className="h-10 rounded-full px-4 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                        >
-                                            {sport.name}
-                                        </ToggleGroupItem>
-                                    ))}
-                                </ToggleGroup>
-                                {selectedSport && (
-                                    <p className="mt-3 text-xs text-muted-foreground">
-                                        Rates: ₱{selectedSport.rate_offpeak}{' '}
-                                        off-peak · ₱{selectedSport.rate_peak}{' '}
-                                        peak (evenings &amp; weekends). Final
-                                        total is shown after you submit.
-                                    </p>
-                                )}
-                                {form.errors.sport_id && (
-                                    <p className="mt-2 text-sm text-destructive">
-                                        {form.errors.sport_id}
-                                    </p>
-                                )}
-                            </CardContent>
-                        </Card>
+                <div className="space-y-6">
+                    {/* Step 1 — sport */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                1 · Choose a sport
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ToggleGroup
+                                type="single"
+                                value={sportId ? String(sportId) : ''}
+                                onValueChange={handleSportChange}
+                                className="flex flex-wrap justify-start gap-2"
+                            >
+                                {sports.map((sport) => (
+                                    <ToggleGroupItem
+                                        key={sport.id}
+                                        value={String(sport.id)}
+                                        variant="outline"
+                                        className="h-10 rounded-full px-4 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                                    >
+                                        {sport.name}
+                                    </ToggleGroupItem>
+                                ))}
+                            </ToggleGroup>
+                            {selectedSport && (
+                                <p className="mt-3 text-xs text-muted-foreground">
+                                    Rates: ₱{selectedSport.rate_offpeak}{' '}
+                                    off-peak · ₱{selectedSport.rate_peak} peak
+                                    (evenings &amp; weekends). Final total is
+                                    shown after you submit.
+                                </p>
+                            )}
+                            {form.errors.sport_id && (
+                                <p className="mt-2 text-sm text-destructive">
+                                    {form.errors.sport_id}
+                                </p>
+                            )}
+                        </CardContent>
+                    </Card>
 
-                        {/* Step 2 + 3 — date & slots */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base">
-                                    2 · Pick a date &amp; time
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="grid gap-6 sm:grid-cols-[auto_1fr]">
-                                <Calendar
-                                    mode="single"
-                                    selected={date}
-                                    onSelect={handleDateChange}
-                                    disabled={{ before: today }}
-                                    className="rounded-md border"
-                                />
+                    {/* Step 2 + 3 — date & slots */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                2 · Pick a date &amp; time
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid gap-6 sm:grid-cols-[auto_1fr]">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={handleDateChange}
+                                disabled={{ before: today }}
+                                className="rounded-md border"
+                            />
 
-                                <div className="min-w-0">
-                                    <div className="mb-2 flex items-center gap-2 text-sm font-medium">
-                                        <CalendarDays className="size-4 text-primary" />
-                                        {date
-                                            ? date.toLocaleDateString(
-                                                  undefined,
-                                                  {
-                                                      month: 'short',
-                                                      day: 'numeric',
-                                                      year: 'numeric',
-                                                  },
-                                              )
-                                            : 'Select a date'}
-                                    </div>
-
-                                    {!sportId && (
-                                        <p className="text-sm text-muted-foreground">
-                                            Choose a sport first.
-                                        </p>
-                                    )}
-
-                                    {sportId && !date && (
-                                        <p className="text-sm text-muted-foreground">
-                                            Choose a date to see open slots.
-                                        </p>
-                                    )}
-
-                                    {loadingSlots && (
-                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                            <Spinner className="size-4" />{' '}
-                                            Loading slots…
-                                        </div>
-                                    )}
-
-                                    {slotsError && (
-                                        <p className="text-sm text-destructive">
-                                            {slotsError}
-                                        </p>
-                                    )}
-
-                                    {availability?.closed && (
-                                        <p className="text-sm text-muted-foreground">
-                                            {availability.closed_reason ??
-                                                'Closed on this day.'}
-                                        </p>
-                                    )}
-
-                                    {availability &&
-                                        !availability.closed &&
-                                        availability.slots.length > 0 && (
-                                            <>
-                                                <p className="mb-2 text-xs text-muted-foreground">
-                                                    {startIdx === null
-                                                        ? 'Tap a start time, then an end time for a multi-hour booking.'
-                                                        : endIdx === null
-                                                          ? `${formatTime(slots[startIdx].start)} selected — tap an end time, or submit for a single hour.`
-                                                          : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
-                                                </p>
-                                                <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
-                                                    {availability.slots.map(
-                                                        (item, index) => {
-                                                            const isInRange =
-                                                                startIdx !==
-                                                                    null &&
-                                                                index >=
-                                                                    startIdx &&
-                                                                index <=
-                                                                    (endIdx ??
-                                                                        startIdx);
-
-                                                            return (
-                                                                <button
-                                                                    key={
-                                                                        item.start
-                                                                    }
-                                                                    type="button"
-                                                                    title={`${formatTime(item.start)} – ${formatTime(item.end)} · ${slotMeta[item.status].label}`}
-                                                                    disabled={
-                                                                        !item.selectable &&
-                                                                        !isInRange
-                                                                    }
-                                                                    onClick={() =>
-                                                                        handleSlotClick(
-                                                                            index,
-                                                                        )
-                                                                    }
-                                                                    className={cn(
-                                                                        'rounded-md border px-2 py-1.5 text-xs font-medium transition-colors',
-                                                                        isInRange
-                                                                            ? 'border-primary bg-primary text-primary-foreground'
-                                                                            : item.status ===
-                                                                                'pending'
-                                                                              ? 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-700'
-                                                                              : item.selectable
-                                                                                ? 'border-input hover:border-primary hover:bg-primary/5'
-                                                                                : 'cursor-not-allowed border-transparent bg-muted text-muted-foreground',
-                                                                    )}
-                                                                >
-                                                                    {formatTime(
-                                                                        item.start,
-                                                                    )}
-                                                                </button>
-                                                            );
-                                                        },
-                                                    )}
-                                                </div>
-                                                <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="size-2 rounded-full bg-primary" />{' '}
-                                                        Selected
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="size-2 rounded-full border border-input" />{' '}
-                                                        Free
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="size-2 rounded-full bg-amber-200" />{' '}
-                                                        Pending
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="size-2 rounded-full bg-muted-foreground/40" />{' '}
-                                                        Booked / past
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
-
-                                    {form.errors.date && (
-                                        <p className="mt-2 text-sm text-destructive">
-                                            {form.errors.date}
-                                        </p>
-                                    )}
-                                    {form.errors.start_time && (
-                                        <p className="mt-2 text-sm text-destructive">
-                                            {form.errors.start_time}
-                                        </p>
-                                    )}
+                            <div className="min-w-0">
+                                <div className="mb-2 flex items-center gap-2 text-sm font-medium">
+                                    <CalendarDays className="size-4 text-primary" />
+                                    {date
+                                        ? date.toLocaleDateString(undefined, {
+                                              month: 'short',
+                                              day: 'numeric',
+                                              year: 'numeric',
+                                          })
+                                        : 'Select a date'}
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+
+                                {!sportId && (
+                                    <p className="text-sm text-muted-foreground">
+                                        Choose a sport first.
+                                    </p>
+                                )}
+
+                                {sportId && !date && (
+                                    <p className="text-sm text-muted-foreground">
+                                        Choose a date to see open slots.
+                                    </p>
+                                )}
+
+                                {loadingSlots && (
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Spinner className="size-4" /> Loading
+                                        slots…
+                                    </div>
+                                )}
+
+                                {slotsError && (
+                                    <p className="text-sm text-destructive">
+                                        {slotsError}
+                                    </p>
+                                )}
+
+                                {availability?.closed && (
+                                    <p className="text-sm text-muted-foreground">
+                                        {availability.closed_reason ??
+                                            'Closed on this day.'}
+                                    </p>
+                                )}
+
+                                {availability &&
+                                    !availability.closed &&
+                                    availability.slots.length > 0 && (
+                                        <>
+                                            <p className="mb-2 text-xs text-muted-foreground">
+                                                {startIdx === null
+                                                    ? 'Tap a start time, then an end time for a multi-hour booking.'
+                                                    : endIdx === null
+                                                      ? `${formatTime(slots[startIdx].start)} selected — tap an end time, or submit for a single hour.`
+                                                      : `${formatTime(selectedStart!)} – ${formatTime(selectedEnd!)} · ${selectedHours} ${selectedHours === 1 ? 'hour' : 'hours'} selected.`}
+                                            </p>
+                                            <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-6 md:grid-cols-8">
+                                                {availability.slots.map(
+                                                    (item, index) => {
+                                                        const isInRange =
+                                                            startIdx !== null &&
+                                                            index >= startIdx &&
+                                                            index <=
+                                                                (endIdx ??
+                                                                    startIdx);
+
+                                                        return (
+                                                            <button
+                                                                key={item.start}
+                                                                type="button"
+                                                                title={`${formatTime(item.start)} – ${formatTime(item.end)} · ${slotMeta[item.status].label}`}
+                                                                disabled={
+                                                                    !item.selectable &&
+                                                                    !isInRange
+                                                                }
+                                                                onClick={() =>
+                                                                    handleSlotClick(
+                                                                        index,
+                                                                    )
+                                                                }
+                                                                className={cn(
+                                                                    'rounded-md border px-2 py-1.5 text-xs font-medium transition-colors',
+                                                                    isInRange
+                                                                        ? 'border-primary bg-primary text-primary-foreground'
+                                                                        : item.status ===
+                                                                            'pending'
+                                                                          ? 'cursor-not-allowed border-amber-200 bg-amber-50 text-amber-700'
+                                                                          : item.selectable
+                                                                            ? 'border-input hover:border-primary hover:bg-primary/5'
+                                                                            : 'cursor-not-allowed border-transparent bg-muted text-muted-foreground',
+                                                                )}
+                                                            >
+                                                                {formatTime(
+                                                                    item.start,
+                                                                )}
+                                                            </button>
+                                                        );
+                                                    },
+                                                )}
+                                            </div>
+                                            <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+                                                <span className="flex items-center gap-1">
+                                                    <span className="size-2 rounded-full bg-primary" />{' '}
+                                                    Selected
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <span className="size-2 rounded-full border border-input" />{' '}
+                                                    Free
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <span className="size-2 rounded-full bg-amber-200" />{' '}
+                                                    Pending
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <span className="size-2 rounded-full bg-muted-foreground/40" />{' '}
+                                                    Booked / past
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+
+                                {form.errors.date && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {form.errors.date}
+                                    </p>
+                                )}
+                                {form.errors.start_time && (
+                                    <p className="mt-2 text-sm text-destructive">
+                                        {form.errors.start_time}
+                                    </p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Step 4 — details */}
-                    <Card className="lg:sticky lg:top-24 lg:self-start">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="text-base">
                                 3 · Your details
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={submit} className="space-y-4">
+                            <form
+                                onSubmit={submit}
+                                className="mx-auto max-w-xl space-y-4"
+                            >
                                 <div className="space-y-2">
                                     <Label htmlFor="guest_name">
                                         Full name
